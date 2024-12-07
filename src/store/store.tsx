@@ -9,7 +9,7 @@ import {
 } from "react-redux";
 import { setupListeners } from "@reduxjs/toolkit/query";
 import { useRef } from "react";
-import { accountState } from "./states/accounts-state";
+import { accountState } from "./states";
 
 const rootReducer = combineReducers({
   account: accountState.reducer,

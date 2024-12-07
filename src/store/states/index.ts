@@ -1,19 +1,21 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface initialStateTypes {
-  accountId: string | null;
+  threadId: string | null;
 }
 
 const initialState: initialStateTypes = {
-  accountId: "",
+  threadId: "",
 };
 
 export const accountState = createSlice({
   name: "app-state",
   initialState,
   reducers: {
-    setAccountId: (state, action: PayloadAction<string | null>) => {},
+    setThreadId: (state, action: PayloadAction<string | null>) => {
+      state.threadId = action.payload;
+    },
   },
 });
 
-export const { setAccountId } = accountState.actions;
+export const { setThreadId } = accountState.actions;

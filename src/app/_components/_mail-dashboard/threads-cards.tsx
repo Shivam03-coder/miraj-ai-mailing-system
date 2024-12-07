@@ -5,6 +5,8 @@ import { Skeleton } from "@/components/ui/skeleton";
 import useThreads from "@/hooks/use-threads";
 import { format, formatDistanceToNow } from "date-fns";
 import DOMPurify from "dompurify";
+import { useAppDispatch, useAppSelector } from "@/store/store";
+import { setThreadId } from "@/store/states";
 
 // Optimized labelChecker function using a Map for better performance
 const labelChecker = (label: string) => {
@@ -19,12 +21,17 @@ const labelChecker = (label: string) => {
 
 const ThreadCards = () => {
   const { threads, isFetching } = useThreads();
+  const dispatch = useAppDispatch();
+  const threadId = useAppSelector((state) => state.account.threadId);
 
   if (isFetching) {
     return <Skeleton className="h-[300px] w-[250px]" />;
   }
 
-  // Memoize the threads grouping to prevent unnecessary recalculations
+  if (threads.length === 0) {
+    return <h1>Maa chudaa bsdk</h1>;
+  }
+
   const threadsGroup = threads?.reduce(
     (acc, thread) => {
       const date: string = format(
@@ -52,8 +59,9 @@ const ThreadCards = () => {
 
             return (
               <Card
+                onClick={() => dispatch(setThreadId(thr.id))}
                 key={thr.id}
-                className="my-3 flex flex-col gap-4 bg-secondary p-4 text-primary"
+                className={`my-3 flex cursor-pointer flex-col gap-4 bg-secondary p-4 text-primary transition-all hover:bg-paleblue ${threadId === thr.id ? "bg-paleblue" : "bg-secondary"}`}
               >
                 <div className="flex w-full justify-between">
                   <div className="rounded-lg bg-primary px-2 text-left text-secondary">
