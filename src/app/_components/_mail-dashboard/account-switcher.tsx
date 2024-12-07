@@ -16,7 +16,7 @@ import { useLocalStorage } from "usehooks-ts";
 
 const AccountSwitcher = () => {
   const { data: accounts } = api.mails.getAccounts.useQuery();
-  const [AccountId, setAccountId] = useLocalStorage("accountId", "");
+  const [_, setAccountId] = useLocalStorage("accountId", "");
 
   if (!accounts) {
     return null;

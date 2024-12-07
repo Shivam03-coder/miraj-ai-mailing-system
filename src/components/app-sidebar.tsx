@@ -21,45 +21,23 @@ import {
 } from "@/components/ui/sidebar";
 import { AppFeatures } from "./appfeatures";
 
-const data = {
-  user: {
-    name: "Shivam Anand",
-    email: "shivam850anand@gmail.com",
-    avatar: "/avatars/shadcn.jpg",
+const data = [
+  {
+    title: "inbox",
+    icon: <SquareTerminal size={21} />,
+    threadNum: 0,
   },
-  navMain: [
-    {
-      title: "Inbox",
-      icon: <SquareTerminal size={21} />,
-    },
-    {
-      title: "Draft",
-      icon: <Bot size={21} />,
-    },
-    {
-      title: "Sent",
-      icon: <BookOpen size={21} />,
-    },
-  ],
-  projects: [
-    {
-      name: "Google Meet",
-      url: "#",
-      icon: Frame,
-    },
-    {
-      name: "Google Chat",
-      url: "#",
-      icon: PieChart,
-    },
-    {
-      name: "Chat with Us",
-      url: "#",
-      icon: Map,
-    },
-  ],
-};
-
+  {
+    title: "draft",
+    icon: <Bot size={21} />,
+    threadNum: 0,
+  },
+  {
+    title: "sent",
+    icon: <BookOpen size={21} />,
+    threadNum: 0,
+  },
+];
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible="icon" {...props}>
@@ -67,8 +45,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <TeamSwitcher />
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
-        <AppFeatures projects={data.projects} />
+        <NavMain items={data} />
       </SidebarContent>
       <SidebarFooter>
         <NavUser />

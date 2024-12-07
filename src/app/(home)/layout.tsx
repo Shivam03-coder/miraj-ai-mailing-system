@@ -6,7 +6,6 @@ const HomeLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <>
       <Navbar />
-      <LinkAccountbtn />
       {children}
     </>
   );
