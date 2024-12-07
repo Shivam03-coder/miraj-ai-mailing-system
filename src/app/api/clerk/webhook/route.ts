@@ -9,9 +9,20 @@ export const POST = async (req: Request) => {
   const imageUrl = data.image_url;
   const id = data.id;
 
-  await db.user.create({
-    data: { id, emailAddress, firstName, lastName, imageUrl },
-  });
+  try {
+    await db.user.create({
+      data: {
+        id,
+        emailAddress,
+        imageUrl,
+        lastName,
+        firstName,
+      },
+    });
+  } catch (error) {
+    console.log(" error:", error);
+    return new Response("Webhook failed", { status: 200 });
+  }
 
   return new Response("Webhook received", { status: 200 });
 };
