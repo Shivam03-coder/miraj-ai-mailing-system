@@ -6,7 +6,7 @@ const Navs = () => {
   const [ActiveTab, setActiveTab] = useState<string>("Recived");
 
   return (
-    <nav className="flex gap-3 mb-3">
+    <nav className="mb-3 flex gap-3">
       <InboxTabs
         ActiveTab={ActiveTab}
         setActiveTab={setActiveTab}

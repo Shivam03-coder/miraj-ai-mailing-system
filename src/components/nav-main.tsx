@@ -27,7 +27,6 @@ export function NavMain({
   const [accountId] = useLocalStorage("accountId", "");
 
   const { state } = useSidebar();
-  console.log("🚀 ~ state:", state);
 
   const { data: InboxThreads } = api.mails.getEmailtypesNumber.useQuery({
     accountId,
