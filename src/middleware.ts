@@ -5,6 +5,8 @@ const isPublicRoute = createRouteMatcher([
   "/sign-in(.*)",
   "/sign-up(.*)",
   "/api/clerk/webhook(.*)",
+  "/api/aurinko/emailsync(.*)",
+
 ]);
 
 // Middleware to handle route protection
