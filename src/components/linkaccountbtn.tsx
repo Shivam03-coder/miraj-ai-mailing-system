@@ -5,7 +5,6 @@ import { getAurnikoAuthUrl } from "@/lib/aurinko";
 const LinkAccountbtn = () => {
   const handleLinkingaccount = async () => {
     const url = await getAurnikoAuthUrl("Google");
-    console.log("🚀 ~ handleLinkingaccount ~ url:", url);
     window.location.href = url;
   };
   return (

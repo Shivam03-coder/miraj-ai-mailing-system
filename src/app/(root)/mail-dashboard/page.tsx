@@ -8,9 +8,7 @@ function MaildashBoard() {
       <div className="min-h-[100vh] flex-1 rounded-xl bg-white md:min-h-min">
         <Inbox />
       </div>
-      <div className="min-h-[100vh] flex-1 rounded-xl bg-green-300 md:min-h-min">
-        <LinkAccountbtn />
-      </div>
+      <div className="min-h-[100vh] flex-1 rounded-xl bg-green-300 md:min-h-min"></div>
     </div>
   );
 }

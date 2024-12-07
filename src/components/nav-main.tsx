@@ -1,12 +1,6 @@
 "use client";
 
-import { ChevronRight, type LucideIcon } from "lucide-react";
-
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible";
+import React, { useEffect, useState } from "react";
 import {
   SidebarGroup,
   SidebarGroupLabel,
@@ -14,7 +8,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
-import React from "react";
+import { useLocalStorage } from "usehooks-ts";
 
 export function NavMain({
   items,
@@ -25,6 +19,16 @@ export function NavMain({
     isActive?: boolean;
   }[];
 }) {
+  const [CurrentTab, setCurrentTab] = useLocalStorage("Current-tab", "");
+  const [hydrated, setHydrated] = useState(false);
+  useEffect(() => {
+    setHydrated(true);
+  }, []);
+
+  if (!hydrated) {
+    return null;
+  }
+
   return (
     <SidebarGroup>
       <SidebarGroupLabel>
@@ -32,10 +36,14 @@ export function NavMain({
       </SidebarGroupLabel>
       <SidebarMenu>
         {items.map((item) => (
-          <section key={item.title} className="group/collapsible">
+          <section
+            key={item.title}
+            onClick={() => setCurrentTab(item.title)}
+            className="group/collapsible"
+          >
             <SidebarMenuItem>
               <SidebarMenuButton
-                className="hover:bg-paleblue"
+                className={CurrentTab === item.title ? "bg-paleblue" : ""}
                 tooltip={item.title}
               >
                 <span>{item.icon}</span>

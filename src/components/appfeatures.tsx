@@ -34,8 +34,6 @@ export function AppFeatures({
     icon: LucideIcon;
   }[];
 }) {
-  const { isMobile } = useSidebar();
-
   return (
     <SidebarGroup className="group-data-[collapsible=icon]:hidden">
       <SidebarGroupLabel>
