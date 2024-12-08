@@ -99,4 +99,28 @@ export const mailsRouter = createTRPCRouter({
         },
       });
     }),
+
+  getSuggestionEmails: protectedProcedure
+    .input(
+      z.object({
+        accountId: z.string(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const acc = await authorizeUserAcessAccount(
+        input.accountId,
+        ctx.auth.userId,
+      );
+
+      return await ctx.db.emailAddress.findMany({
+        where: {
+          accountId: acc?.id,
+        },
+
+        select: {
+          address: true,
+          name: true,
+        },
+      });
+    }),
 });

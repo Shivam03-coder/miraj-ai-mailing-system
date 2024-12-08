@@ -13,7 +13,7 @@ import React from "react";
 
 const EmailboxHeader = () => {
   return (
-    <nav className="flex h-10 w-full items-center justify-between bg-paleblue px-5">
+    <nav className="flex h-10 w-full rounded-lg items-center justify-between bg-paleblue px-5">
       <div className="flex h-full items-center gap-5 text-primary">
         <TooltipBtn tooltiplabel="Archive">
           <button className="rounded-lg p-1 transition-all hover:bg-primary hover:text-secondary">

@@ -10,8 +10,7 @@ function MaildashBoard() {
       <div className="flex-1 rounded-xl bg-white md:min-h-min">
         <Inbox />
       </div>
-      <div className="h-[100vh] flex-1 overflow-y-scroll rounded-xl bg-white md:min-h-min">
-        <EmailboxHeader />
+      <div className="flex-1 rounded-xl bg-white md:min-h-min">
         <Emailbox />
       </div>
     </div>

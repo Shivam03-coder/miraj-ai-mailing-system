@@ -17,10 +17,7 @@ const EmailCard: React.FC<EmailCardprops> = ({ email }) => {
   return (
     <Card className="flex flex-col gap-2 bg-secondary p-3">
       <div className="flex justify-between">
-        <div className="space-y-2 px-1">
-          <h6 className="w-max rounded-lg bg-green-300 px-2 py-1">
-            {email.from.name}
-          </h6>
+        <div className="flex  items-center gap-2">
           {!account ? (
             <Avatar
               name={email.from.name ?? email.from.address}
@@ -35,6 +32,10 @@ const EmailCard: React.FC<EmailCardprops> = ({ email }) => {
               {email.from.address}
             </h6>
           )}
+
+          <h6 className="w-max rounded-lg bg-green-300 px-2 py-1">
+            {email.from.name}
+          </h6>
         </div>
         <h6>{formatDistanceToNow(new Date(email.sentAt ?? new Date()))}</h6>
       </div>

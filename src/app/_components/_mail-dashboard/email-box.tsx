@@ -6,6 +6,7 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { format } from "date-fns";
 import EmailCard from "./email-card";
 import ReplyBox from "./reply-box";
+import EmailboxHeader from "./email-header";
 
 const Emailbox = () => {
   const { threads } = useThreads();
@@ -21,8 +22,9 @@ const Emailbox = () => {
   }
 
   return (
-    <main className="flex h-full flex-col gap-2">
-      <div className="flex justify-between border-b-2 bg-slate-200 p-4">
+    <main className="min-h-screen space-y-2 overflow-y-scroll p-3">
+      <EmailboxHeader />
+      <div className="flex justify-between rounded-lg border-b-2 bg-slate-200 p-4">
         <div className="flex gap-2">
           <div className="flex gap-2">
             <Avatar>
@@ -42,16 +44,17 @@ const Emailbox = () => {
         </div>
         <h6>{format(new Date(thread.emails[0]?.sentAt || ""), "PPpp")}</h6>
       </div>
-      <div className="flex max-h-[calc(100vh-2.25rem)] flex-col overflow-scroll p-1">
-        {thread.emails.map((em) => (
-          <EmailCard email={em} key={em.id} />
-        ))}
-      </div>
-
-      {/* Text editior */}
-      <div className="flex flex-1">
-        <ReplyBox />
-      </div>
+      <section className="flex max-h-[100vh] flex-1 flex-col gap-2 overflow-scroll">
+        <div className="flex min-h-[400px] flex-col overflow-scroll p-1">
+          {thread.emails.map((em) => (
+            <EmailCard email={em} key={em.id} />
+          ))}
+        </div>
+        {/* Text editior */}
+        <div className="flex min-h-[400px] flex-1 flex-col overflow-scroll">
+          <ReplyBox />
+        </div>
+      </section>
     </main>
   );
 };
