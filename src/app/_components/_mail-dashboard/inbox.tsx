@@ -8,7 +8,7 @@ function Inbox() {
     <main className="min-h-screen space-y-2 overflow-y-scroll p-3">
       <Navs />
       <SerachInput />
-      <section className="flex flex-col gap-2">
+      <section className="flex max-h-[100vh] flex-1 overflow-scroll flex-col gap-2">
         <ThreadCards />
       </section>
     </main>
