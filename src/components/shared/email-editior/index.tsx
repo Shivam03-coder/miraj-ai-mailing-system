@@ -7,6 +7,7 @@ import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import EditorMenuBar from "./editor-munu-bar";
 import MailInput from "./mail-input";
+import { Input } from "@/components/ui/input";
 
 const EmailEditor = () => {
   const [value, setValue] = useState<string>("");
@@ -53,6 +54,11 @@ const EmailEditor = () => {
               onChange={console.log}
               placeholder="Add Recipients"
               value={[]}
+            />
+            <Input
+              className="rounded-md border-none bg-paleblue outline-none"
+              id="subject"
+              placeholder="Subject"
             />
           </>
         )}

@@ -7,6 +7,8 @@ import { format } from "date-fns";
 import EmailCard from "./email-card";
 import ReplyBox from "./reply-box";
 import EmailboxHeader from "./email-header";
+import LottieComponent from "@/lib/lottie-react";
+import animationload from "../../../../public/lottie/not_found.json";
 
 const Emailbox = () => {
   const { threads } = useThreads();
@@ -15,8 +17,8 @@ const Emailbox = () => {
 
   if (!thread) {
     return (
-      <div className="p-4">
-        <h5>No message selected</h5>
+      <div className="flex-center h-full w-full">
+        <LottieComponent animationData={animationload} />
       </div>
     );
   }

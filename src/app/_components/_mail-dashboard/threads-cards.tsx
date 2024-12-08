@@ -7,6 +7,7 @@ import { format, formatDistanceToNow } from "date-fns";
 import DOMPurify from "dompurify";
 import { useAppDispatch, useAppSelector } from "@/store/store";
 import { setThreadId } from "@/store/states";
+import LottieComponent from "@/lib/lottie-react";
 
 // Optimized labelChecker function using a Map for better performance
 const labelChecker = (label: string) => {
@@ -24,14 +25,6 @@ const ThreadCards = () => {
   const dispatch = useAppDispatch();
   const threadId = useAppSelector((state) => state.account.threadId);
 
-  if (isFetching) {
-    return <Skeleton className="h-[300px] w-[250px]" />;
-  }
-
-  if (threads.length === 0) {
-    return <h1>Maa chudaa bsdk</h1>;
-  }
-
   const threadsGroup = threads?.reduce(
     (acc, thread) => {
       const date: string = format(
@@ -48,6 +41,12 @@ const ThreadCards = () => {
     },
     {} as Record<string, typeof threads>,
   );
+
+  if (threads.length === 0 || isFetching) {
+    return <div className="w-full h-full flex-center">
+      <LottieComponent />
+    </div>;
+  }
 
   return (
     <div className="min-h-screen overflow-y-scroll">
