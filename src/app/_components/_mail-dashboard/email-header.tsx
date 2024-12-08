@@ -11,7 +11,7 @@ import {
 } from "lucide-react";
 import React from "react";
 
-const ReplyboxHeader = () => {
+const EmailboxHeader = () => {
   return (
     <nav className="flex h-10 w-full items-center justify-between bg-paleblue px-5">
       <div className="flex h-full items-center gap-5 text-primary">
@@ -65,4 +65,4 @@ const ReplyboxHeader = () => {
   );
 };
 
-export default ReplyboxHeader;
+export default EmailboxHeader;

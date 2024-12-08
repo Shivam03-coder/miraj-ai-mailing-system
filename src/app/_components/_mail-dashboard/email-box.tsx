@@ -4,10 +4,10 @@ import useThreads from "@/hooks/use-threads";
 import { useAppSelector } from "@/store/store";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { format } from "date-fns";
-import { Separator } from "@/components/ui/separator";
 import EmailCard from "./email-card";
+import ReplyBox from "./reply-box";
 
-const ReplyBox = () => {
+const Emailbox = () => {
   const { threads } = useThreads();
   const { threadId } = useAppSelector((state) => state.account);
   const thread = threads.find((thr) => thr.id === threadId);
@@ -49,9 +49,11 @@ const ReplyBox = () => {
       </div>
 
       {/* Text editior */}
-      <div className="flex flex-1 bg-slate-500"></div>
+      <div className="flex flex-1">
+        <ReplyBox />
+      </div>
     </main>
   );
 };
 
-export default ReplyBox;
+export default Emailbox;

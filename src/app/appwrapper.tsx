@@ -15,7 +15,7 @@ const AppLayout = ({ children }: { children: React.ReactNode }) => {
 const AppWrapper = ({ children }: { children: React.ReactNode }) => {
   return (
     <StoreProvider>
-      <AppLayout>{children}</AppLayout>
+        <AppLayout>{children}</AppLayout>
     </StoreProvider>
   );
 };
