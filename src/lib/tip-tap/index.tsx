@@ -4,13 +4,13 @@ import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Text from "@tiptap/extension-text";
 import React, { useState } from "react";
-import { Card } from "@/components/ui/card";
 import EditorMenuBar from "./editor-munu-bar";
 import MailInput from "./mail-input";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
 import { SendHorizonal } from "lucide-react";
+import AiComposeBtn from "@/components/ai-compose-btn";
 
 type PropOptions = { label: string; value: string }[];
 
@@ -38,8 +38,6 @@ const EmailEditor: React.FC<EmailEditorProps> = ({
   ccValues,
   handleSend,
   isSending,
-  // onCcChange,
-  // onToChange,
   setCcValues,
   setSubject,
   setToValues,
@@ -100,24 +98,28 @@ const EmailEditor: React.FC<EmailEditorProps> = ({
             />
           </>
         )}
-        <div className="flex items-center gap-2 px-1">
+        <div className="my-3 flex items-center justify-between gap-2 px-1">
           <button
             className="cursor-pointer rounded bg-yellow-300 px-2"
             onClick={() => setIsExpanded(!IsExpanded)}
           >
             <span className="flex gap-2">
               <h6 className="text-red-600">Draft </h6>
-              <h6>to {to?.join(", ")}</h6>
+              <h6>to : {to?.join(", ")}</h6>
             </span>
           </button>
+          <AiComposeBtn isComposing onGenrate={console.log} />
         </div>
       </div>
-      <div className="prose my-2 min-h-[100px] w-full rounded-lg bg-paleblue p-2">
-        <EditorContent editor={editor} />
+      <div className="prose my-2 min-h-[200px] w-full rounded-lg bg-paleblue p-2">
+        <EditorContent
+          editor={editor}
+          placeholder="Create Mail....."
+          className="placeholder:text-primary"
+        />
       </div>
-
       <Separator />
-      <div className="flex items-center justify-between rounded-lg bg-secondary px-4 py-3 font-inter">
+      <div className="my-3 flex items-center justify-between rounded-lg bg-secondary  pl-2 font-inter">
         <span className="text-sm">
           Tip: Press{" "}
           <kbd className="rounded-lg border border-gray-200 bg-paleblue px-2 py-1.5 text-xs font-semibold text-gray-800">

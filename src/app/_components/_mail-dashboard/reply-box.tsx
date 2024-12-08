@@ -1,6 +1,6 @@
 "use client";
 
-import EmailEditior from "@/components/shared/email-editior";
+import EmailEditior from "@/lib/tip-tap";
 import useThreads from "@/hooks/use-threads";
 import { useAppSelector } from "@/store/store";
 import { api, RouterOutputs } from "@/trpc/react";

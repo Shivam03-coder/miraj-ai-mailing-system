@@ -93,7 +93,7 @@ export const mailsRouter = createTRPCRouter({
             },
           },
         },
-        take: 20,
+        take: 12,
         orderBy: {
           lastMessageDate: "desc",
         },

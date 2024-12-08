@@ -119,7 +119,7 @@ const EditorMenuBar = ({ editor }: { editor: Editor }) => {
   ];
 
   return (
-    <div className="flex flex-wrap my-2 w-full gap-2 bg-paleblue shadow-sm rounded-lg p-2 ">
+    <div className="flex flex-wrap my-3 w-full gap-2 bg-paleblue shadow-sm rounded-lg p-2 ">
       {menuItems.map(
         ({ action, isActive, icon: Icon, label, disabled }, index) => (
           <TooltipBtn key={index} tooltiplabel={label}>
