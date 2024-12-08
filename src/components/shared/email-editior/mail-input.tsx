@@ -7,7 +7,7 @@ import Select from "react-select";
 type OptionType = { label: string; value: string };
 
 type MailInputProps = {
-  defaultValues: OptionType[];
+  defaultValues?: OptionType[];
   placeholder: string;
   label: string;
   onChange: (value: OptionType[]) => void;
@@ -53,7 +53,6 @@ const MailInput: React.FC<MailInputProps> = ({
           // @ts-ignore
           onChange={(selected) => onChange(selected as OptionType[])}
           placeholder={placeholder}
-          defaultValue={defaultValues}
           isMulti
           // @ts-ignore
           options={

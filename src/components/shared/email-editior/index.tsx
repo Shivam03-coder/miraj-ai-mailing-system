@@ -3,15 +3,53 @@
 import { EditorContent, useEditor } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Text from "@tiptap/extension-text";
-import { useState } from "react";
+import React, { useState } from "react";
 import { Card } from "@/components/ui/card";
 import EditorMenuBar from "./editor-munu-bar";
 import MailInput from "./mail-input";
 import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
+import { Button } from "@/components/ui/button";
+import { SendHorizonal } from "lucide-react";
 
-const EmailEditor = () => {
+type PropOptions = { label: string; value: string }[];
+
+type EmailEditorProps = {
+  subject: string;
+  setSubject: (subject: string) => void;
+
+  toValues: PropOptions;
+  setToValues: (value: PropOptions) => void;
+
+  ccValues: PropOptions;
+  setCcValues: (value: PropOptions) => void;
+
+  to: string[];
+  handleSend: (value: string) => void;
+  isSending: boolean;
+
+  // onToChange: (values: PropOptions) => void;
+  // onCcChange: (values: PropOptions) => void;
+
+  defaultToolbarExpand?: boolean;
+};
+
+const EmailEditor: React.FC<EmailEditorProps> = ({
+  ccValues,
+  handleSend,
+  isSending,
+  // onCcChange,
+  // onToChange,
+  setCcValues,
+  setSubject,
+  setToValues,
+  subject,
+  to,
+  toValues,
+  defaultToolbarExpand,
+}) => {
   const [value, setValue] = useState<string>("");
-  const [IsExpanded, setIsExpanded] = useState<boolean>(false);
+  const [IsExpanded, setIsExpanded] = useState<boolean>(!!defaultToolbarExpand);
 
   // Custom Text extension with a keyboard shortcut
   const CustomText = Text.extend({
@@ -40,25 +78,25 @@ const EmailEditor = () => {
         {IsExpanded && (
           <>
             <MailInput
-              defaultValues={[]}
               label="To :"
               // @ts-ignore
-              onChange={console.log}
-              placeholder="Add Recipients"
-              value={[]}
+              onChange={setToValues}
+              placeholder="Add Recipients....."
+              value={toValues}
             />
             <MailInput
-              defaultValues={[]}
               label="Cc :"
               // @ts-ignore
-              onChange={console.log}
-              placeholder="Add Recipients"
-              value={[]}
+              onChange={setCcValues}
+              placeholder="Add Recipients....."
+              value={ccValues}
             />
             <Input
               className="rounded-md border-none bg-paleblue outline-none"
               id="subject"
               placeholder="Subject"
+              onChange={(e) => setSubject(e.target.value)}
+              value={subject}
             />
           </>
         )}
@@ -69,13 +107,34 @@ const EmailEditor = () => {
           >
             <span className="flex gap-2">
               <h6 className="text-red-600">Draft </h6>
-              <h6>: To Elliot</h6>
+              <h6>to {to?.join(", ")}</h6>
             </span>
           </button>
         </div>
       </div>
-      <div className="prose my-2 min-h-[300px] w-full rounded-lg bg-paleblue p-2">
+      <div className="prose my-2 min-h-[100px] w-full rounded-lg bg-paleblue p-2">
         <EditorContent editor={editor} />
+      </div>
+
+      <Separator />
+      <div className="flex items-center justify-between rounded-lg bg-secondary px-4 py-3 font-inter">
+        <span className="text-sm">
+          Tip: Press{" "}
+          <kbd className="rounded-lg border border-gray-200 bg-paleblue px-2 py-1.5 text-xs font-semibold text-gray-800">
+            Cmd + J
+          </kbd>{" "}
+          for AI autocomplete
+        </span>
+        <Button
+          disabled={isSending}
+          onClick={async () => {
+            editor.commands.clearContent();
+            await handleSend(value);
+          }}
+          className="flex items-center gap-3 font-inter text-secondary"
+        >
+          Send <SendHorizonal size={19} />
+        </Button>
       </div>
     </div>
   );

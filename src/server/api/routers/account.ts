@@ -123,4 +123,73 @@ export const mailsRouter = createTRPCRouter({
         },
       });
     }),
+  getEmailReplyDetails: protectedProcedure
+    .input(
+      z.object({
+        accountId: z.string(),
+        threadId: z.string(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      const acc = await authorizeUserAcessAccount(
+        input.accountId,
+        ctx.auth.userId,
+      );
+
+      const thread = await ctx.db.thread.findUnique({
+        where: { id: input.threadId },
+        include: {
+          emails: {
+            orderBy: {
+              sentAt: "asc",
+            },
+            select: {
+              from: true,
+              to: true,
+              body: true,
+              subject: true,
+              bodySnippet: true,
+              emailLabel: true,
+              sysLabels: true,
+              id: true,
+              sentAt: true,
+              cc: true,
+              internetMessageId: true,
+            },
+          },
+        },
+      });
+
+      if (!thread) {
+        throw new Error("Thread not found");
+      }
+
+      const lastExternalEmail = thread.emails
+        .reverse()
+        .find((email) => email.from.id !== acc?.id);
+
+      if (!lastExternalEmail) {
+        throw new Error("No External Emails Found");
+      }
+
+      return {
+        subject: lastExternalEmail.subject,
+        to: [
+          lastExternalEmail.from,
+          ...lastExternalEmail.to.filter(
+            (to) => to.address === acc?.emailAddress,
+          ),
+        ],
+        cc: lastExternalEmail.cc.filter(
+          (cc) => cc.address !== acc?.emailAddress,
+        ),
+
+        from: {
+          name: acc?.name,
+          address: acc?.emailAddress,
+        },
+
+        id: lastExternalEmail.internetMessageId,
+      };
+    }),
 });
