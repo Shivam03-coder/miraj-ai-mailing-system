@@ -15,7 +15,7 @@ const EmailCard: React.FC<EmailCardprops> = ({ email }) => {
   const Accountemail = account?.emailAddress === email.from.address;
 
   return (
-    <Card className="flex flex-col gap-2 bg-secondary p-3">
+    <Card className="flex mb-5 flex-col gap-2 bg-secondary p-3">
       <div className="flex justify-between">
         <div className="flex  items-center gap-2">
           {!account ? (
