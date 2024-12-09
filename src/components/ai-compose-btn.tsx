@@ -12,12 +12,11 @@ import {
 import { Button } from "./ui/button";
 import { BotIcon } from "lucide-react";
 import { Textarea } from "./ui/textarea";
-import { readStreamableValue } from "ai/rsc";
 import { handlePromptWithContext } from "@/lib/gemini-ai/action";
-import { api } from "@/trpc/react";
 import useThreads from "@/hooks/use-threads";
 import { useAppSelector } from "@/store/store";
 import { turndown } from "@/lib/turn-down";
+import Spinners from "./spinners";
 
 type AiComposeBtnProps = {
   isComposing: boolean;
@@ -28,8 +27,9 @@ const AiComposeBtn: React.FC<AiComposeBtnProps> = ({
   isComposing,
   onGenerate,
 }) => {
+  const [Open, setOpen] = useState<boolean>(false);
   const [prompt, setPrompt] = useState<string>("");
-  const [loading, setLoading] = useState<boolean>(false);
+  const [Loading, setLoading] = useState<boolean>(false);
   const { account, threads } = useThreads();
   const { threadId } = useAppSelector((state) => state.account);
   const thread = threads.find((thr) => thr.id === threadId);
@@ -67,7 +67,7 @@ const AiComposeBtn: React.FC<AiComposeBtnProps> = ({
   };
 
   return (
-    <Dialog>
+    <Dialog open={Open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <span
           className="flex cursor-pointer items-center justify-center rounded-lg bg-primary p-1 text-secondary"
@@ -90,17 +90,18 @@ const AiComposeBtn: React.FC<AiComposeBtnProps> = ({
           placeholder="Enter a prompt"
           onChange={(e) => setPrompt(e.target.value)}
           rows={6}
-          disabled={loading}
+          disabled={Loading}
         />
         <DialogFooter>
           <Button
             onClick={async () => {
               setPrompt("");
               aiGenerate();
+              setOpen(false);
             }}
-            className="bg-secondary font-inter text-primary"
+            className="bg-primary  font-inter text-secondary w-full"
           >
-            GENERATE
+            {Loading ? <Spinners color="red" size={20} /> : "GENERATE"}
           </Button>
         </DialogFooter>
       </DialogContent>

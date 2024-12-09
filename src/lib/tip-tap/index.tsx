@@ -123,14 +123,8 @@ const EmailEditor: React.FC<EmailEditorProps> = ({
         />
       </div>
       <Separator />
-      <div className="my-3 flex items-center justify-between rounded-lg bg-secondary pl-2 font-inter">
-        <span className="text-sm">
-          Tip: Press{" "}
-          <kbd className="rounded-lg border border-gray-200 bg-paleblue px-2 py-1.5 text-xs font-semibold text-gray-800">
-            Cmd + J
-          </kbd>{" "}
-          for AI autocomplete
-        </span>
+      <div className="my-3 flex items-center justify-between rounded-lg bg-secondary pl-2 py-2 font-inter">
+        <h6 className="text-sm">Tip: Press Send Mail by for AI mails.....</h6>
         <Button
           disabled={isSending}
           onClick={async () => {
