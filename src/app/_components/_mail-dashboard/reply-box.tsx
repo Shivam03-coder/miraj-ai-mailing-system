@@ -21,12 +21,11 @@ const ReplyBox = () => {
   return <Component ReplyDeatils={ReplyDeatils} />;
 };
 
-const Component = ({
+export const Component = ({
   ReplyDeatils,
 }: {
   ReplyDeatils: RouterOutputs["mails"]["getEmailReplyDetails"];
 }) => {
-  const { accountId } = useThreads();
   const { threadId } = useAppSelector((state) => state.account);
 
   const [subject, setSubject] = React.useState(

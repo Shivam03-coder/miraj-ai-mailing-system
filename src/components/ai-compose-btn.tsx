@@ -16,7 +16,6 @@ import { handlePromptWithContext } from "@/lib/gemini-ai/action";
 import useThreads from "@/hooks/use-threads";
 import { useAppSelector } from "@/store/store";
 import { turndown } from "@/lib/turn-down";
-import Spinners from "./spinners";
 
 type AiComposeBtnProps = {
   isComposing: boolean;
@@ -99,9 +98,9 @@ const AiComposeBtn: React.FC<AiComposeBtnProps> = ({
               aiGenerate();
               setOpen(false);
             }}
-            className="bg-primary  font-inter text-secondary w-full"
+            className="w-full bg-primary font-inter text-secondary"
           >
-            {Loading ? <Spinners color="red" size={20} /> : "GENERATE"}
+            {Loading ? "GENERATING..." : "GENERATE"}
           </Button>
         </DialogFooter>
       </DialogContent>

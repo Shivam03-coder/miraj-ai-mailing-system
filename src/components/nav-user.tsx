@@ -15,12 +15,15 @@ import { GetUserInfo } from "@/lib/clerk/getuserinfo";
 import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import TooltipBtn from "./tool-tip-btn";
+import { EditorSheet } from "./editor-sheet";
 
 export function NavUser() {
   const [user, setUser] = useState<null | {
     emailAddresses: any;
     firstName: string;
   }>(null);
+
+  const [Open, setOpen] = useState<boolean>(false);
 
   const { state: SidebarState } = useSidebar();
   // "expanded" | "collapsed"
@@ -43,7 +46,8 @@ export function NavUser() {
       <SidebarMenuItem className="space-y-2">
         <SidebarMenuButton
           size="lg"
-          className="bg-primary text-secondary shadow-none data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
+          onClick={() => setOpen(true)}
+          className="bg-primary text-secondary data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
         >
           {SidebarState === "collapsed" ? (
             <TooltipBtn tooltiplabel="Compose Mail">
@@ -59,6 +63,7 @@ export function NavUser() {
               </div>
             </div>
           )}
+          {Open && <EditorSheet open={Open} setOpen={setOpen} />}
         </SidebarMenuButton>
         <SidebarMenuButton
           size="lg"
