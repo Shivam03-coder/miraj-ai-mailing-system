@@ -17,6 +17,7 @@ import { handlePromptWithContext } from "@/lib/gemini-ai/action";
 import { api } from "@/trpc/react";
 import useThreads from "@/hooks/use-threads";
 import { useAppSelector } from "@/store/store";
+import { turndown } from "@/lib/turn-down";
 
 type AiComposeBtnProps = {
   isComposing: boolean;
@@ -29,32 +30,32 @@ const AiComposeBtn: React.FC<AiComposeBtnProps> = ({
 }) => {
   const [prompt, setPrompt] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
-  const { accountId } = useThreads();
+  const { account, threads } = useThreads();
   const { threadId } = useAppSelector((state) => state.account);
-  const {
-    data: context,
-    error,
-    isLoading,
-  } = api.mails.getMailContext.useQuery({
-    accountId,
-    threadId: threadId || "",
-  });
-
-  if (isLoading) {
-    console.log("Loading context...");
-  } else if (error) {
-    console.error("Error fetching context:", error);
-  } else {
-    console.log("🚀 ~ context:", context?.subject);
-  }
+  const thread = threads.find((thr) => thr.id === threadId);
 
   const aiGenerate = async () => {
     setLoading(true);
+
+    let context = "";
+
+    if (!isComposing) {
+      for (const email of thread?.emails ?? []) {
+        const Content = `
+        Subject : ${email.subject}
+        From : ${email.from.address}
+        Sent : ${email.sentAt}
+        Body : ${turndown.turndown(email.body ?? email.bodySnippet ?? "")}
+        `;
+
+        context += Content;
+      }
+
+      context += `My name is ${account?.name} , My email address is ${account?.emailAddress}`;
+    }
+
     try {
-      const response = await handlePromptWithContext(
-        prompt,
-        (context?.subject as string) ?? "",
-      );
+      const response = await handlePromptWithContext(prompt, context ?? "");
       if (response) {
         onGenerate(response);
       }

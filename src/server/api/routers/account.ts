@@ -13,6 +13,7 @@ export const mailsRouter = createTRPCRouter({
       select: {
         id: true,
         emailAddress: true,
+        name: true,
       },
     });
   }),
@@ -192,31 +193,5 @@ export const mailsRouter = createTRPCRouter({
 
         id: lastExternalEmail.internetMessageId,
       };
-    }),
-
-  getMailContext: protectedProcedure
-    .input(
-      z.object({
-        threadId: z.string(),
-        accountId: z.string(),
-      }),
-    )
-    .query(async ({ ctx, input }) => {
-      // Authorize user access to the account
-      await authorizeUserAcessAccount(input.accountId, ctx.auth.userId);
-
-      // Fetch the thread context based on both accountId and threadId
-      const threadContext = await ctx.db.thread.findUnique({
-        where: {
-          id: input.threadId,
-        },
-        select: {
-          subject: true,
-        },
-      });
-
-      console.log(threadContext);
-
-      return threadContext;
     }),
 });
