@@ -1,8 +1,13 @@
+import { Account } from "@/helpers";
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { authorizeUserAcessAccount } from "@/utils/authorizeduseraccount";
 import { Prisma } from "@prisma/client";
-import { threadId } from "worker_threads";
-import { string, tuple, z } from "zod";
+import { z } from "zod";
+
+const emailAddressSchema = z.object({
+  name: z.string(),
+  address: z.string(),
+});
 
 export const mailsRouter = createTRPCRouter({
   getAccounts: protectedProcedure.query(async ({ ctx }) => {
@@ -193,5 +198,59 @@ export const mailsRouter = createTRPCRouter({
 
         id: lastExternalEmail.internetMessageId,
       };
+    }),
+
+  sendEmails: protectedProcedure
+    .input(
+      z.object({
+        accountId: z.string(),
+        body: z.string(),
+        subject: z.string(),
+        from: emailAddressSchema,
+        to: z.array(emailAddressSchema),
+        cc: z.array(emailAddressSchema).optional(),
+        bcc: z.array(emailAddressSchema).optional(),
+        replyTo: emailAddressSchema,
+        inReplyTo: z.string().optional(),
+        threadId: z.string().optional(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      try {
+        const acc = await authorizeUserAcessAccount(
+          input.accountId,
+          ctx.auth.userId,
+        );
+
+        if (!acc) {
+          throw new Error("ACCOUNT NOT FOUND");
+        }
+
+        const newAccount = new Account(acc?.token!);
+
+        console.log("Send email");
+
+        const res = await newAccount.sendEmails({
+          body: input.body,
+          subject: input.subject,
+          threadId: input.threadId,
+          to: input.to,
+          bcc: input.bcc,
+          cc: input.cc,
+          replyTo: input.bcc,
+          from: input.from,
+          inReplyTo: input.inReplyTo,
+        });
+
+        if (!res) {
+          throw new Error("UNABLE TO SEND MESSAGE");
+        }
+
+        console.log("Send email sucessfull");
+
+        return res;
+      } catch (error) {
+        console.log(error);
+      }
     }),
 });

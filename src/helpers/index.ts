@@ -120,4 +120,61 @@ export class Account {
       throw new Error("Primary email sync process failed.");
     }
   }
+
+  // SEND EMAILS
+  // SEND EMAILS
+  async sendEmails({
+    bcc,
+    body,
+    cc,
+    from,
+    inReplyTo,
+    references,
+    replyTo,
+    subject,
+    to,
+    threadId,
+  }: {
+    from: EmailAddress;
+    subject: string;
+    body: string;
+    inReplyTo?: string;
+    references?: string;
+    to: EmailAddress[];
+    cc?: EmailAddress[];
+    bcc?: EmailAddress[];
+    replyTo?: EmailAddress[];
+    threadId?: string;
+  }) {
+    try {
+      const resp = await axios.post(
+        "https://api.aurinko.io/v1/email/messages",
+        {
+          bcc,
+          body,
+          cc,
+          from,
+          inReplyTo,
+          references,
+          replyTo,
+          subject,
+          to,
+          threadId,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${this.token}`,
+          },
+        },
+      );
+
+      return resp.data;
+    } catch (error) {
+      // Log the error for debugging
+      console.error("Error sending email:", error);
+
+      // You can throw a more descriptive error or handle it as per your application's needs
+      throw new Error(`Failed to send email. ${error || "Unknown error"}`);
+    }
+  }
 }

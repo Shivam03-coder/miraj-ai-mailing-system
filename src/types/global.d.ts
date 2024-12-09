@@ -1,3 +1,4 @@
+import { EmailAddress } from "@clerk/nextjs/server";
 import { z } from "zod";
 
 export interface ISyncResponse {
@@ -47,7 +48,7 @@ export interface EmailRecord {
 export interface EmailAddress {
   name: string;
   address: string;
-  raw: string;
+  raw?: string;
 }
 
 export interface Attachment {

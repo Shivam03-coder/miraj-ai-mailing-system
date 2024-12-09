@@ -5,7 +5,7 @@ import useThreads from "@/hooks/use-threads";
 import { useAppSelector } from "@/store/store";
 import { api, RouterOutputs } from "@/trpc/react";
 import React from "react";
-
+import { toast } from "sonner";
 const ReplyBox = () => {
   const { accountId } = useThreads();
   const { threadId } = useAppSelector((state) => state.account);
@@ -27,6 +27,7 @@ export const Component = ({
   ReplyDeatils: RouterOutputs["mails"]["getEmailReplyDetails"];
 }) => {
   const { threadId } = useAppSelector((state) => state.account);
+  const { accountId } = useThreads();
 
   const [subject, setSubject] = React.useState(
     ReplyDeatils.subject.startsWith("Re:")
@@ -71,7 +72,40 @@ export const Component = ({
     );
   }, [ReplyDeatils, threadId]);
 
-  const handleSend = () => {};
+  const sendEmail = api.mails.sendEmails.useMutation();
+
+  const handleSend = async (value: string) => {
+    if (!ReplyDeatils) return;
+    sendEmail.mutate(
+      {
+        accountId,
+        threadId: threadId ?? undefined,
+        body: value,
+        subject,
+        // @ts-ignore
+        from: ReplyDeatils.from,
+        to: ReplyDeatils.to.map((to) => ({
+          name: to.name ?? to.address,
+          address: to.address,
+        })),
+        cc: ReplyDeatils.cc.map((cc) => ({
+          name: cc.name ?? cc.address,
+          address: cc.address,
+        })),
+        // @ts-ignore
+        replyTo: ReplyDeatils.from,
+        inReplyTo: ReplyDeatils.id,
+      },
+      {
+        onSuccess: () => {
+          toast.success("Email sent Successfully");
+        },
+        onError: () => {
+          toast.error("Email not sent");
+        },
+      },
+    );
+  };
 
   return (
     <EmailEditior
