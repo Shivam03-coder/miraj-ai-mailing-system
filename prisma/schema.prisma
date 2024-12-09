@@ -65,7 +65,7 @@ model Account {
     id     String @id @default(cuid())
     userId String
 
-    binaryIndex Json?
+    oramaIndex Json?
 
     token        String @unique
     provider     String
@@ -78,7 +78,6 @@ model Account {
     threads        Thread[]
     emailAddresses EmailAddress[]
 }
-
 
 model Thread {
     id              String   @id @default(cuid())
