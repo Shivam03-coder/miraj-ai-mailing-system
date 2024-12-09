@@ -1,7 +1,8 @@
 import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { authorizeUserAcessAccount } from "@/utils/authorizeduseraccount";
 import { Prisma } from "@prisma/client";
-import { z } from "zod";
+import { threadId } from "worker_threads";
+import { string, tuple, z } from "zod";
 
 export const mailsRouter = createTRPCRouter({
   getAccounts: protectedProcedure.query(async ({ ctx }) => {
@@ -191,5 +192,31 @@ export const mailsRouter = createTRPCRouter({
 
         id: lastExternalEmail.internetMessageId,
       };
+    }),
+
+  getMailContext: protectedProcedure
+    .input(
+      z.object({
+        threadId: z.string(),
+        accountId: z.string(),
+      }),
+    )
+    .query(async ({ ctx, input }) => {
+      // Authorize user access to the account
+      await authorizeUserAcessAccount(input.accountId, ctx.auth.userId);
+
+      // Fetch the thread context based on both accountId and threadId
+      const threadContext = await ctx.db.thread.findUnique({
+        where: {
+          id: input.threadId,
+        },
+        select: {
+          subject: true,
+        },
+      });
+
+      console.log(threadContext);
+
+      return threadContext;
     }),
 });

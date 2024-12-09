@@ -27,10 +27,6 @@ type EmailEditorProps = {
   to: string[];
   handleSend: (value: string) => void;
   isSending: boolean;
-
-  // onToChange: (values: PropOptions) => void;
-  // onCcChange: (values: PropOptions) => void;
-
   defaultToolbarExpand?: boolean;
 };
 
@@ -68,6 +64,11 @@ const EmailEditor: React.FC<EmailEditorProps> = ({
       setValue(editor.getHTML() || "");
     },
   });
+
+  const onGenerate = (resptxt: string) => {
+    editor?.commands.insertContent(resptxt);
+  };
+
   if (!editor) return null;
   return (
     <div className="flex w-full flex-col border-none shadow-none">
@@ -108,7 +109,10 @@ const EmailEditor: React.FC<EmailEditorProps> = ({
               <h6>to : {to?.join(", ")}</h6>
             </span>
           </button>
-          <AiComposeBtn isComposing onGenrate={console.log} />
+          <AiComposeBtn
+            isComposing={!!defaultToolbarExpand}
+            onGenerate={onGenerate}
+          />
         </div>
       </div>
       <div className="prose my-2 min-h-[200px] w-full rounded-lg bg-paleblue p-2">
@@ -119,7 +123,7 @@ const EmailEditor: React.FC<EmailEditorProps> = ({
         />
       </div>
       <Separator />
-      <div className="my-3 flex items-center justify-between rounded-lg bg-secondary  pl-2 font-inter">
+      <div className="my-3 flex items-center justify-between rounded-lg bg-secondary pl-2 font-inter">
         <span className="text-sm">
           Tip: Press{" "}
           <kbd className="rounded-lg border border-gray-200 bg-paleblue px-2 py-1.5 text-xs font-semibold text-gray-800">
