@@ -11,8 +11,9 @@ const ReplyBox = () => {
   const { threadId } = useAppSelector((state) => state.account);
   const { data: ReplyDeatils } = api.mails.getEmailReplyDetails.useQuery({
     accountId,
-    threadId: threadId ?? "",
+    threadId: threadId!,
   });
+
 
   if (!ReplyDeatils) {
     return null;
@@ -76,6 +77,8 @@ export const Component = ({
 
   const handleSend = async (value: string) => {
     if (!ReplyDeatils) return;
+
+    console.log("🚀 ~ handleSend ~ value:", value);
     sendEmail.mutate(
       {
         accountId,
@@ -105,6 +108,7 @@ export const Component = ({
         },
       },
     );
+    console.log("🚀 ~ handleSend ~ ReplyDeatils:", ReplyDeatils);
   };
 
   return (

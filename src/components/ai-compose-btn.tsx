@@ -84,7 +84,7 @@ const AiComposeBtn: React.FC<AiComposeBtnProps> = ({
           </DialogTitle>
         </DialogHeader>
         <Textarea
-          className="rounded-lg border-none bg-paleblue font-inter text-primary shadow-none outline-none"
+          className="rounded-xl border-none bg-paleblue font-inter text-lg text-primary shadow-none outline-none"
           value={prompt}
           placeholder="Enter a prompt"
           onChange={(e) => setPrompt(e.target.value)}

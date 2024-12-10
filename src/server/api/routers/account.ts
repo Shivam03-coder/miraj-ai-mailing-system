@@ -1,5 +1,9 @@
 import { Account } from "@/helpers";
-import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
+import {
+  createTRPCRouter,
+  protectedProcedure,
+  publicProcedure,
+} from "@/server/api/trpc";
 import { authorizeUserAcessAccount } from "@/utils/authorizeduseraccount";
 import { Prisma } from "@prisma/client";
 import { z } from "zod";
@@ -81,7 +85,7 @@ export const mailsRouter = createTRPCRouter({
         equals: input.done,
       };
 
-      return await ctx.db.thread.findMany({
+      const threads = await ctx.db.thread.findMany({
         where: filter,
         include: {
           emails: {
@@ -89,7 +93,12 @@ export const mailsRouter = createTRPCRouter({
               sentAt: "asc",
             },
             select: {
-              from: true,
+              from: {
+                select: {
+                  name: true,
+                  address: true,
+                },
+              },
               body: true,
               bodySnippet: true,
               emailLabel: true,
@@ -100,11 +109,12 @@ export const mailsRouter = createTRPCRouter({
             },
           },
         },
-        take: 12,
+        take: 15,
         orderBy: {
           lastMessageDate: "desc",
         },
       });
+      return threads;
     }),
 
   getSuggestionEmails: protectedProcedure
@@ -142,6 +152,8 @@ export const mailsRouter = createTRPCRouter({
         input.accountId,
         ctx.auth.userId,
       );
+
+      console.log(input.accountId);
 
       const thread = await ctx.db.thread.findUnique({
         where: { id: input.threadId },
