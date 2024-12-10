@@ -18,6 +18,8 @@ export const authorizeUserAcessAccount = async (
       },
     });
 
+    console.log(account);
+
     if (!account) {
       throw new Error("ACCOUNT NOT FOUND");
     }

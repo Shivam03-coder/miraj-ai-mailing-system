@@ -67,6 +67,7 @@ export const mailsRouter = createTRPCRouter({
         input.accountId,
         ctx.auth.userId,
       );
+      console.log("ACCOUNT", input.accountId);
 
       if (!acc) throw new Error("ACCOUNT NOT FOUND");
 
