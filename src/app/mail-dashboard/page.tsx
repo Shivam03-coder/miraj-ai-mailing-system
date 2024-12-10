@@ -1,8 +1,7 @@
+"use clinet";
+
 import Inbox from "@/app/_components/_mail-dashboard/in-box";
-import ReplyBox from "@/app/_components/_mail-dashboard/email-box";
-import ReplyboxHeader from "@/app/_components/_mail-dashboard/email-header";
 import Emailbox from "@/app/_components/_mail-dashboard/email-box";
-import EmailboxHeader from "@/app/_components/_mail-dashboard/email-header";
 
 function MaildashBoard() {
   return (

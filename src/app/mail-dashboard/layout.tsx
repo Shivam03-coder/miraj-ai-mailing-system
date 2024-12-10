@@ -1,4 +1,3 @@
-// import AccountSwitcher from "@/app/_components/_mail-dashboard/account-switcher";
 import AccountSwitcher from "@/app/_components/_mail-dashboard/account-switcher";
 import { AppSidebar } from "@/components/app-sidebar";
 import {
