@@ -5,6 +5,7 @@ import {
   IEmailResponse,
   ISyncResponse,
 } from "@/types/global";
+import { SyncToDataBase } from "@/utils/database-sync";
 import axios from "axios";
 export class Account {
   private token: string;
@@ -175,6 +176,59 @@ export class Account {
 
       // You can throw a more descriptive error or handle it as per your application's needs
       throw new Error(`Failed to send email. ${error || "Unknown error"}`);
+    }
+  }
+
+  // METHOD TO SYNC EMAILS ON THE BASIS OF NEXT DELTATOKEN
+
+  async SyncNewEmailsInDb() {
+    try {
+      const acc = await db.account.findUnique({
+        where: {
+          token: this.token,
+        },
+      });
+
+      if (!acc) throw new Error("Invalid token");
+      if (!acc.nextDeltaToken) throw new Error("No delta token");
+      let response = await this.getUpdatedEmailsByBookmarkToken({
+        deltaToken: acc.nextDeltaToken,
+      });
+      let allEmails: EmailRecord[] = response.records;
+      let storedDeltaToken = acc.nextDeltaToken;
+      if (response.nextDeltaToken) {
+        storedDeltaToken = response.nextDeltaToken;
+      }
+
+      while (response.nextPageToken) {
+        response = await this.getUpdatedEmailsByBookmarkToken({
+          pageToken: response.nextPageToken,
+        });
+        allEmails = allEmails.concat(response.records);
+        if (response.nextDeltaToken) {
+          storedDeltaToken = response.nextDeltaToken;
+        }
+      }
+
+      if (!response) throw new Error("Failed to sync emails");
+
+      try {
+        await SyncToDataBase(allEmails, acc.id);
+      } catch (error) {
+        console.log("error", error);
+      }
+
+      // console.log('syncEmails', response)
+      await db.account.update({
+        where: {
+          id: acc.id,
+        },
+        data: {
+          nextDeltaToken: storedDeltaToken,
+        },
+      });
+    } catch (error) {
+      console.log(error);
     }
   }
 }
