@@ -73,7 +73,9 @@ export const mailsRouter = createTRPCRouter({
 
       const Acc = new Account(acc?.token);
 
-      await Acc.SyncNewEmailsInDb().catch((err) => console.log(err));
+      await Acc.SyncNewEmailsInDb()
+      .then(() => console.log("Sync completed"))
+      .catch((err) => console.error("Error during sync:", err));
 
       // DYNAMIC CUSTOME QUERRYING
 

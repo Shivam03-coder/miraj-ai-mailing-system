@@ -19,7 +19,7 @@ export function NavMain({
     title: string;
     icon?: React.ReactNode;
     isActive?: boolean;
-    threadNum: number;
+    threadNum?: number; // Made optional initially
   }[];
 }) {
   const [CurrentTab, setCurrentTab] = useLocalStorage("Current-tab", "");
@@ -28,6 +28,7 @@ export function NavMain({
 
   const { state } = useSidebar();
 
+  // Queries to fetch email thread numbers
   const { data: InboxThreads } = api.mails.getEmailtypesNumber.useQuery({
     accountId,
     tab: "inbox",
@@ -41,25 +42,25 @@ export function NavMain({
     tab: "draft",
   });
 
+  // Map thread numbers dynamically after fetching data
   const updatedData = items.map((obj) => {
     if (obj.title === "inbox") {
-      return { ...obj, threadNum: InboxThreads };
+      return { ...obj, threadNum: InboxThreads || 0 }; // Default to 0 if data is undefined
     } else if (obj.title === "draft") {
-      return { ...obj, threadNum: DraftThreads };
+      return { ...obj, threadNum: DraftThreads || 0 };
     } else if (obj.title === "sent") {
-      return { ...obj, threadNum: SentThreads };
+      return { ...obj, threadNum: SentThreads || 0 };
     }
     return obj;
   });
 
-  // SETTING HYDRATED TO TRUE PREVENTS THE COMPONENT FROM RENDERING PREMATURELY ON THE SERVER.
-
+  // Hydrate the component after fetching data to ensure client-side rendering
   useEffect(() => {
     setHydrated(true);
   }, []);
 
   if (!hydrated) {
-    return null;
+    return null; // Prevent premature rendering
   }
 
   return (
@@ -76,7 +77,11 @@ export function NavMain({
           >
             <SidebarMenuItem>
               <SidebarMenuButton
-                className={`${CurrentTab === item.title && state === "expanded" ? "bg-paleblue" : "bg-neutral-50"} `}
+                className={`${
+                  CurrentTab === item.title && state === "expanded"
+                    ? "bg-paleblue"
+                    : "bg-neutral-50"
+                }`}
                 tooltip={item.title}
               >
                 <div className="flex items-center gap-16">
