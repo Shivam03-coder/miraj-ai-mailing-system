@@ -194,39 +194,45 @@ export class Account {
       let response = await this.getUpdatedEmailsByBookmarkToken({
         deltaToken: acc.nextDeltaToken,
       });
-      let allEmails: EmailRecord[] = response.records;
-      let storedDeltaToken = acc.nextDeltaToken;
-      if (response.nextDeltaToken) {
-        storedDeltaToken = response.nextDeltaToken;
-      }
+      console.log("🚀 ~ Account ~ SyncNewEmailsInDb ~ response:", response)
 
-      while (response.nextPageToken) {
-        response = await this.getUpdatedEmailsByBookmarkToken({
-          pageToken: response.nextPageToken,
-        });
-        allEmails = allEmails.concat(response.records);
-        if (response.nextDeltaToken) {
-          storedDeltaToken = response.nextDeltaToken;
-        }
-      }
+      
+      // let allEmails: EmailRecord[] = response.records;
+      // let storedDeltaToken = acc.nextDeltaToken;
+      // if (response.nextDeltaToken) {
+      //   storedDeltaToken = response.nextDeltaToken;
+      // }
 
-      if (!response) throw new Error("Failed to sync emails");
+      // while (response.nextPageToken) {
+      //   response = await this.getUpdatedEmailsByBookmarkToken({
+      //     pageToken: response.nextPageToken,
+      //   });
+      //   allEmails = allEmails.concat(response.records);
+      //   if (response.nextDeltaToken) {
+      //     storedDeltaToken = response.nextDeltaToken;
+      //   }
+      // }
 
-      try {
-        await SyncToDataBase(allEmails, acc.id);
-      } catch (error) {
-        console.log("error", error);
-      }
+      // if (!response) throw new Error("Failed to sync emails");
+      // console.log("==================allEmails==============\n", allEmails);
 
-      // console.log('syncEmails', response)
-      await db.account.update({
-        where: {
-          id: acc.id,
-        },
-        data: {
-          nextDeltaToken: storedDeltaToken,
-        },
-      });
+      // try {
+      //   await SyncToDataBase(allEmails, acc.id);
+      // } catch (error) {
+      //   console.log("error", error);
+      // }
+
+      // // console.log('syncEmails', response)
+      // await db.account.update({
+      //   where: {
+      //     id: acc.id,
+      //   },
+      //   data: {
+      //     nextDeltaToken: storedDeltaToken,
+      //   },
+      // });
+
+      // console.log("Account updated succesfully");
     } catch (error) {
       console.log(error);
     }

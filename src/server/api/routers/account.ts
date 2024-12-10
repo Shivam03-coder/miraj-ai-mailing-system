@@ -2,7 +2,6 @@ import { Account } from "@/helpers";
 import {
   createTRPCRouter,
   protectedProcedure,
-  publicProcedure,
 } from "@/server/api/trpc";
 import { authorizeUserAcessAccount } from "@/utils/authorizeduseraccount";
 import { Prisma } from "@prisma/client";
@@ -67,7 +66,16 @@ export const mailsRouter = createTRPCRouter({
       }),
     )
     .query(async ({ ctx, input }) => {
-      await authorizeUserAcessAccount(input.accountId, ctx.auth.userId);
+      const acc = await authorizeUserAcessAccount(
+        input.accountId,
+        ctx.auth.userId,
+      );
+
+      if (!acc) throw new Error("ACCOUNT NOT FOUND");
+
+      const Acc = new Account(acc?.token);
+
+      await Acc.SyncNewEmailsInDb().catch((err) => console.log(err));
 
       // DYNAMIC CUSTOME QUERRYING
 
