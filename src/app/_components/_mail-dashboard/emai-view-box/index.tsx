@@ -25,7 +25,6 @@ const EmailViewbox = () => {
 
   return (
     <main className="min-h-screen space-y-2 overflow-y-scroll p-3">
-      <EmailViewBoxHeader />
       <div className="flex justify-between rounded-lg border-b-2 bg-slate-200 p-4">
         <div className="flex gap-2">
           <div className="flex gap-2">
