@@ -55,7 +55,7 @@ const SaveEmailsInDb = async (
       ...email.bcc,
       ...email.replyTo,
     ]) {
-      addressesToupSert.set(user.address, user);
+      addressesToupSert.set(user.emailAddress, user);
     }
 
     // Iterate through each unique address and upsert it into the database.
@@ -76,7 +76,7 @@ const SaveEmailsInDb = async (
         .map((address) => [address?.address, address]),
     );
 
-    const fromAddress = addressMap.get(email.from.address);
+    const fromAddress = addressMap.get(email.from.emailAddress);
 
     if (!fromAddress) {
       console.log(
@@ -86,16 +86,16 @@ const SaveEmailsInDb = async (
     }
 
     const toAddresses = email.to
-      .map((addr) => addressMap.get(addr.address))
+      .map((addr) => addressMap.get(addr.emailAddress))
       .filter(Boolean);
     const ccAddresses = email.cc
-      .map((addr) => addressMap.get(addr.address))
+      .map((addr) => addressMap.get(addr.emailAddress))
       .filter(Boolean);
     const bccAddresses = email.bcc
-      .map((addr) => addressMap.get(addr.address))
+      .map((addr) => addressMap.get(addr.emailAddress))
       .filter(Boolean);
     const replyToAddresses = email.replyTo
-      .map((addr) => addressMap.get(addr.address))
+      .map((addr) => addressMap.get(addr.emailAddress))
       .filter(Boolean);
 
     // 2. Upsert Thread
