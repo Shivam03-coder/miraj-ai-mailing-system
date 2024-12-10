@@ -3,7 +3,7 @@ import { Attachment, EmailAddress, EmailRecord } from "@/types/global";
 import pLimit from "p-limit";
 
 // ======= ARRAY OF MAILS TO BE SYNCED IN DATABASE. =========
-export const SyncToDataBase = async (
+const SyncToDataBase = async (
   allEmails: EmailRecord[], // Array of email records to be synced.
   accountId: string, // Account identifier to associate emails with.
 ): Promise<void> => {
@@ -28,8 +28,9 @@ export const SyncToDataBase = async (
 const SaveEmailsInDb = async (
   email: EmailRecord,
   accountId: string,
-  i: number,
+  index: number,
 ) => {
+  console.log(`Upserting email ${index + 1}`, JSON.stringify(email, null, 2));
   let emailLabelType: "inbox" | "sent" | "draft" = "inbox";
 
   try {
@@ -46,45 +47,39 @@ const SaveEmailsInDb = async (
 
     //  UNIQUE EMAIL ADDRESS WITHOUT DUPLICATES
 
-    const addressesToupSert = new Map();
-
-    for (const user of [
+    const addressesToUpsert = new Map();
+    for (const address of [
       email.from,
       ...email.to,
       ...email.cc,
       ...email.bcc,
       ...email.replyTo,
     ]) {
-      addressesToupSert.set(user.emailAddress, user);
+      addressesToUpsert.set(address.emailAddress, address);
     }
 
-    // Iterate through each unique address and upsert it into the database.
     const upsertedAddresses: (Awaited<
       ReturnType<typeof upsertEmailAddress>
     > | null)[] = [];
 
-    for (const address of addressesToupSert.values()) {
+    for (const address of addressesToUpsert.values()) {
       const upsertedAddress = await upsertEmailAddress(address, accountId);
       upsertedAddresses.push(upsertedAddress);
     }
 
-    // Filters out any "falsy" values (e.g., null, undefined, false, 0, NaN, or empty strings) from the upsertedAddresses array.
-
     const addressMap = new Map(
       upsertedAddresses
         .filter(Boolean)
-        .map((address) => [address?.address, address]),
+        .map((address) => [address!.address, address]),
     );
 
     const fromAddress = addressMap.get(email.from.emailAddress);
-
     if (!fromAddress) {
       console.log(
         `Failed to upsert from address for email ${email.bodySnippet}`,
       );
       return;
     }
-
     const toAddresses = email.to
       .map((addr) => addressMap.get(addr.emailAddress))
       .filter(Boolean);
@@ -212,9 +207,9 @@ const SaveEmailsInDb = async (
     for (const threadEmail of threadEmails) {
       if (threadEmail.emailLabel === "inbox") {
         threadFolderType = "inbox";
-        break; // If any email is in inbox, the whole thread is in inbox
+        break;
       } else if (threadEmail.emailLabel === "draft") {
-        threadFolderType = "draft"; // Set to draft, but continue checking for inbox
+        threadFolderType = "draft";
       }
     }
 
