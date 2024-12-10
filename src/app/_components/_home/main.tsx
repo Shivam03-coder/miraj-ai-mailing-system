@@ -6,7 +6,7 @@ import BlurFade from "@/components/ui/blur-fade";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Megaphone, Rocket } from "lucide-react";
 import React from "react";
-import PlanCards from "./payablecards.tsx";
+// import PlanCards from "./payablecards.tsx";
 import FaqAccordion from "./faqsaccordion.tsx";
 import { useRouter } from "next/navigation";
 
@@ -102,7 +102,7 @@ const MainLayout = () => {
       </section>
 
       {/* PAYABLE CARDS */}
-      <section className="h-screen bg-slate-100 py-4">
+      {/* <section className="h-screen bg-slate-100 py-4">
         <BlurFade
           className="flex-center mx-auto mt-16 w-full flex-col gap-5"
           delay={0.3}
@@ -126,7 +126,7 @@ const MainLayout = () => {
           </BlurFade>
           <FaqAccordion />
         </section>
-      </section>
+      </section> */}
     </main>
   );
 };

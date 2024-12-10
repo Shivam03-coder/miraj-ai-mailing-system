@@ -6,6 +6,7 @@ import DOMPurify from "dompurify";
 import { useAppDispatch, useAppSelector } from "@/store/store";
 import { setThreadId } from "@/store/states";
 import LottieComponent from "@/lib/lottie-react";
+import ThreadSerachInput from "./thread-search-input";
 
 // Optimized labelChecker function using a Map for better performance
 const labelChecker = (label: string) => {
@@ -42,14 +43,16 @@ const ThreadCards = () => {
 
   if (!threads || threads.length === 0 || isFetching) {
     return (
-      <div className="flex-center h-full w-full">
+      <div className="flex-center h-screen w-full flex-col gap-3">
         <LottieComponent />
+        <h5>WE ARE GETTING YOUR NEW MAILS.....</h5>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen overflow-y-scroll">
+    <div className="min-h-screen space-y-4 overflow-y-scroll">
+      <ThreadSerachInput />
       {Object.entries(threadsGroup).map(([date, thread]) => (
         <div key={date}>
           <span className="te rounded bg-secondary px-2 py-1">{date}</span>
