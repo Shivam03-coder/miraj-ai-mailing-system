@@ -1,8 +1,0 @@
-{
-    "functions": {
-      "api/aurinko/emailsync": {
-        "maxDuration": 60
-      }
-    }
-  }
-  
