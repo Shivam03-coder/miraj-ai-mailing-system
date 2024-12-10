@@ -1,8 +1,9 @@
+"use client";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
 import React from "react";
 
-const SerachInput = () => {
+const ThreadSerachInput = () => {
   return (
     <div className="flex items-center gap-2 rounded bg-paleblue px-3 py-1">
       <Search size={25} />
@@ -14,4 +15,4 @@ const SerachInput = () => {
   );
 };
 
-export default SerachInput;
+export default ThreadSerachInput;

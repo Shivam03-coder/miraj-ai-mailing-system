@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 
-const Navs = () => {
+const ThreadTypesTab = () => {
   const [ActiveTab, setActiveTab] = useState<string>("Recived");
 
   return (
@@ -21,7 +21,7 @@ const Navs = () => {
   );
 };
 
-export default Navs;
+export default ThreadTypesTab;
 
 const InboxTabs = ({
   ActiveTab,

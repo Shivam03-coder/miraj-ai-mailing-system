@@ -1,16 +1,16 @@
-"use client";
+"use client"
 import React from "react";
 import useThreads from "@/hooks/use-threads";
 import { useAppSelector } from "@/store/store";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { format } from "date-fns";
-import EmailCard from "./email-card";
-import ReplyBox from "./reply-box";
-import EmailboxHeader from "./email-header";
+import ReplyBox from "./email-reply-box";
 import LottieComponent from "@/lib/lottie-react";
-import animationload from "../../../../public/lottie/not_found.json";
+import animationload from "../../../../../public/lottie/not_found.json";
+import EmailViewCards from "./email-view-card";
+import EmailViewBoxHeader from "./header";
 
-const Emailbox = () => {
+const EmailViewbox = () => {
   const { threads } = useThreads();
   const { threadId } = useAppSelector((state) => state.account);
   const thread = threads.find((thr) => thr.id === threadId);
@@ -25,7 +25,7 @@ const Emailbox = () => {
 
   return (
     <main className="min-h-screen space-y-2 overflow-y-scroll p-3">
-      <EmailboxHeader />
+      <EmailViewBoxHeader />
       <div className="flex justify-between rounded-lg border-b-2 bg-slate-200 p-4">
         <div className="flex gap-2">
           <div className="flex gap-2">
@@ -49,7 +49,7 @@ const Emailbox = () => {
       <section className="flex max-h-[100vh] flex-1 flex-col gap-2 overflow-scroll">
         <div className="flex min-h-[400px] flex-col overflow-scroll p-1">
           {thread.emails.map((em) => (
-            <EmailCard email={em} key={em.id} />
+            <EmailViewCards email={em} key={em.id} />
           ))}
         </div>
         {/* Text editior */}
@@ -61,4 +61,4 @@ const Emailbox = () => {
   );
 };
 
-export default Emailbox;
+export default EmailViewbox;

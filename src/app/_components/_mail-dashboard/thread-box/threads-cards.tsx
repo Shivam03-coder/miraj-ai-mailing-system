@@ -1,7 +1,5 @@
 "use client";
-import { useMemo } from "react";
 import { Card } from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
 import useThreads from "@/hooks/use-threads";
 import { format, formatDistanceToNow } from "date-fns";
 import DOMPurify from "dompurify";
@@ -42,10 +40,12 @@ const ThreadCards = () => {
     {} as Record<string, typeof threads>,
   );
 
-  if (threads.length === 0 || isFetching) {
-    return <div className="w-full h-full flex-center">
-      <LottieComponent />
-    </div>;
+  if (!threads || threads.length === 0 || isFetching) {
+    return (
+      <div className="flex-center h-full w-full">
+        <LottieComponent />
+      </div>
+    );
   }
 
   return (

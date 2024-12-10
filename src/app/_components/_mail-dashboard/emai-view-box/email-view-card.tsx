@@ -1,3 +1,4 @@
+"use client";
 import Avatar from "react-avatar";
 import { Card } from "@/components/ui/card";
 import useThreads from "@/hooks/use-threads";
@@ -5,19 +6,16 @@ import { RouterOutputs } from "@/trpc/react";
 import { Letter } from "react-letter";
 import { formatDistanceToNow } from "date-fns";
 
-type EmailCardprops = {
+type EmailViewCardsprops = {
   email: RouterOutputs["mails"]["getThreads"][0]["emails"][0];
 };
 
-const EmailCard: React.FC<EmailCardprops> = ({ email }) => {
+const EmailViewCards: React.FC<EmailViewCardsprops> = ({ email }) => {
   const { account } = useThreads();
-
-  const Accountemail = account?.emailAddress === email.from.address;
-
   return (
-    <Card className="flex mb-5 flex-col gap-2 bg-secondary p-3">
+    <Card className="mb-5 flex flex-col gap-2 bg-secondary p-3">
       <div className="flex justify-between">
-        <div className="flex  items-center gap-2">
+        <div className="flex items-center gap-2">
           {!account ? (
             <Avatar
               name={email.from.name ?? email.from.address}
@@ -44,4 +42,4 @@ const EmailCard: React.FC<EmailCardprops> = ({ email }) => {
   );
 };
 
-export default EmailCard;
+export default EmailViewCards;

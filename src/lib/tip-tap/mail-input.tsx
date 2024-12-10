@@ -1,3 +1,5 @@
+"use client";
+
 import Avatar from "react-avatar";
 import useThreads from "@/hooks/use-threads";
 import { api } from "@/trpc/react";
@@ -15,7 +17,6 @@ type MailInputProps = {
 };
 
 const MailInput: React.FC<MailInputProps> = ({
-  defaultValues,
   label,
   placeholder,
   value,
@@ -43,7 +44,7 @@ const MailInput: React.FC<MailInputProps> = ({
 
   return (
     <div className="flex flex-col space-y-2">
-      <label className="pl-1 text-lg  font-inter font-medium text-gray-700 text-primary">
+      <label className="pl-1 font-inter text-lg font-medium text-gray-700 text-primary">
         {label}
       </label>
       <div className="rounded-md border">

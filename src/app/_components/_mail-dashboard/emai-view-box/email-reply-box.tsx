@@ -1,12 +1,11 @@
 "use client";
-
 import EmailEditior from "@/lib/tip-tap";
 import useThreads from "@/hooks/use-threads";
 import { useAppSelector } from "@/store/store";
 import { api, RouterOutputs } from "@/trpc/react";
 import { useToast } from "@/hooks/use-toast";
 import React from "react";
-const ReplyBox = () => {
+const EmailReplyBox = () => {
   const { accountId } = useThreads();
   const { threadId } = useAppSelector((state) => state.account);
   const { data: ReplyDeatils } = api.mails.getEmailReplyDetails.useQuery({
@@ -132,4 +131,4 @@ export const Component = ({
   );
 };
 
-export default ReplyBox;
+export default EmailReplyBox;
