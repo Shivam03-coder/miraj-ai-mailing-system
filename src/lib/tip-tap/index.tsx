@@ -11,6 +11,8 @@ import { Button } from "@/components/ui/button";
 import { SendHorizonal } from "lucide-react";
 import AiComposeBtn from "@/components/ai-compose-btn";
 import EditorMenuBar from "./editor-munu-bar";
+import { useAppDispatch } from "@/store/store";
+import { setIsSheetEditiorOpen } from "@/store/states";
 
 type PropOptions = { label: string; value: string }[];
 
@@ -41,6 +43,7 @@ const EmailEditor: React.FC<EmailEditorProps> = ({
 }) => {
   const [editorContent, setEditorContent] = useState<string>("");
   const [isExpanded, setIsExpanded] = useState<boolean>(defaultToolbarExpand);
+  const Dispatch = useAppDispatch();
 
   // Custom Text extension with a keyboard shortcut
   const CustomText = Text.extend({
@@ -135,6 +138,7 @@ const EmailEditor: React.FC<EmailEditorProps> = ({
           onClick={async () => {
             editor.commands.clearContent();
             await handleSend(editorContent);
+            Dispatch(setIsSheetEditiorOpen());
           }}
           className="flex items-center gap-3 font-inter text-secondary"
         >

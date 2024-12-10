@@ -17,11 +17,10 @@ import useThreads from "@/hooks/use-threads";
 import { useToast } from "@/hooks/use-toast";
 
 type EditorSheetProps = {
-  setOpen: (open: boolean) => void;
   open: boolean;
 };
 
-export function EditorSheet({ open, setOpen }: EditorSheetProps) {
+export function EditorSheet({ open }: EditorSheetProps) {
   const [toValues, setToValues] = useState<{ label: string; value: string }[]>(
     [],
   );
@@ -78,7 +77,7 @@ export function EditorSheet({ open, setOpen }: EditorSheetProps) {
   };
 
   return (
-    <Sheet open={open} onOpenChange={setOpen}>
+    <Sheet open={open}>
       <SheetContent
         side="bottom"
         className="max-h-screen overflow-y-auto bg-secondary text-primary"

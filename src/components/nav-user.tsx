@@ -16,6 +16,8 @@ import { useEffect, useState } from "react";
 import { Button } from "./ui/button";
 import TooltipBtn from "./tool-tip-btn";
 import { EditorSheet } from "./editor-sheet";
+import { useAppDispatch, useAppSelector } from "@/store/store";
+import { setIsSheetEditiorOpen } from "@/store/states";
 
 export function NavUser() {
   const [user, setUser] = useState<null | {
@@ -24,6 +26,9 @@ export function NavUser() {
   }>(null);
 
   const [Open, setOpen] = useState<boolean>(false);
+
+  const { isSheetEditiorOpen } = useAppSelector((st) => st.account);
+  const Dispatch = useAppDispatch();
 
   const { state: SidebarState } = useSidebar();
   // "expanded" | "collapsed"
@@ -46,7 +51,7 @@ export function NavUser() {
       <SidebarMenuItem className="space-y-2">
         <SidebarMenuButton
           size="lg"
-          onClick={() => setOpen(true)}
+          onClick={() => Dispatch(setIsSheetEditiorOpen())}
           className="bg-primary text-secondary data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
         >
           {SidebarState === "collapsed" ? (
@@ -63,8 +68,8 @@ export function NavUser() {
               </div>
             </div>
           )}
-          {Open && <EditorSheet open={Open} setOpen={setOpen} />}
         </SidebarMenuButton>
+        <EditorSheet open={isSheetEditiorOpen} />
         <SidebarMenuButton
           size="lg"
           className="bg-primary text-secondary data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
