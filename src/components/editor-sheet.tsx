@@ -12,6 +12,9 @@ import {
 import { Bot } from "lucide-react";
 import EmailEditor from "@/lib/tip-tap";
 import { useState } from "react";
+import { api } from "@/trpc/react";
+import useThreads from "@/hooks/use-threads";
+import { useToast } from "@/hooks/use-toast";
 
 type EditorSheetProps = {
   setOpen: (open: boolean) => void;
@@ -27,15 +30,58 @@ export function EditorSheet({ open, setOpen }: EditorSheetProps) {
   );
   const [subject, setSubject] = useState<string>("");
 
-  const handleSend = async () => {
-    console.log("Sending email...");
+  const { accountId, account } = useThreads();
+
+  const sendEmail = api.mails.sendEmails.useMutation();
+
+  const { toast } = useToast();
+
+  const handleSend = async (value: string) => {
+    if (!account) return;
+
+    sendEmail.mutate(
+      {
+        accountId,
+        threadId: undefined,
+        body: value,
+        subject,
+        from: {
+          name: account?.name ?? "Me",
+          address: account?.emailAddress ?? "shivam850anand@gmail.com.com",
+        },
+        to: toValues.map((to) => ({ name: to.value, address: to.value })),
+        cc: ccValues.map((cc) => ({ name: cc.value, address: cc.value })),
+        replyTo: {
+          name: account?.name ?? "Me",
+          address: account?.emailAddress ?? "shivam850anand.com",
+        },
+        inReplyTo: undefined,
+      },
+      {
+        onSuccess: () => {
+          toast({
+            title: "Mail Sent Successfully!",
+            description: "Your email has been sent without any issues.",
+            className: "text-lg bg-green-300 text-black font-inter",
+          });
+        },
+        onError: () => {
+          toast({
+            title: "Mail Sending Failed!",
+            description:
+              "An error occurred while sending your email. Please try again.",
+            className: "text-lg bg-red-300 text-black font-inter",
+          });
+        },
+      },
+    );
   };
 
   return (
     <Sheet open={open} onOpenChange={setOpen}>
       <SheetContent
         side="bottom"
-        className="bg-secondary text-primary max-h-screen overflow-y-auto"
+        className="max-h-screen overflow-y-auto bg-secondary text-primary"
       >
         <SheetHeader>
           <SheetTitle>

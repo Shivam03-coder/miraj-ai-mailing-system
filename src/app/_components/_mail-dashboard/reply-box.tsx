@@ -4,8 +4,8 @@ import EmailEditior from "@/lib/tip-tap";
 import useThreads from "@/hooks/use-threads";
 import { useAppSelector } from "@/store/store";
 import { api, RouterOutputs } from "@/trpc/react";
+import { useToast } from "@/hooks/use-toast";
 import React from "react";
-import { toast } from "sonner";
 const ReplyBox = () => {
   const { accountId } = useThreads();
   const { threadId } = useAppSelector((state) => state.account);
@@ -13,7 +13,6 @@ const ReplyBox = () => {
     accountId,
     threadId: threadId!,
   });
-
 
   if (!ReplyDeatils) {
     return null;
@@ -29,6 +28,7 @@ export const Component = ({
 }) => {
   const { threadId } = useAppSelector((state) => state.account);
   const { accountId } = useThreads();
+  const { toast } = useToast();
 
   const [subject, setSubject] = React.useState(
     ReplyDeatils.subject.startsWith("Re:")
@@ -77,8 +77,6 @@ export const Component = ({
 
   const handleSend = async (value: string) => {
     if (!ReplyDeatils) return;
-
-    console.log("🚀 ~ handleSend ~ value:", value);
     sendEmail.mutate(
       {
         accountId,
@@ -101,14 +99,22 @@ export const Component = ({
       },
       {
         onSuccess: () => {
-          toast.success("Email sent Successfully");
+          toast({
+            title: "Mail Sent Successfully!",
+            description: "Your email has been sent without any issues.",
+            className: "text-lg bg-green-300 text-black font-inter",
+          });
         },
         onError: () => {
-          toast.error("Email not sent");
+          toast({
+            title: "Mail Sending Failed!",
+            description:
+              "An error occurred while sending your email. Please try again.",
+            className: "text-lg bg-red-300 text-black font-inter",
+          });
         },
       },
     );
-    console.log("🚀 ~ handleSend ~ ReplyDeatils:", ReplyDeatils);
   };
 
   return (
