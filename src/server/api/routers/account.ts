@@ -1,8 +1,5 @@
 import { Account } from "@/helpers";
-import {
-  createTRPCRouter,
-  protectedProcedure,
-} from "@/server/api/trpc";
+import { createTRPCRouter, protectedProcedure } from "@/server/api/trpc";
 import { authorizeUserAcessAccount } from "@/utils/authorizeduseraccount";
 import { Prisma } from "@prisma/client";
 import { z } from "zod";

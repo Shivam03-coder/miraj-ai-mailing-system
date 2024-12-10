@@ -1,39 +1,43 @@
 import { db } from "@/server/db";
-import { Attachment, EmailAddress, EmailRecord } from "@/types/global";
+import type {
+  SyncUpdatedResponse,
+  EmailMessage,
+  EmailAddress,
+  EmailAttachment,
+  EmailHeader,
+} from "@/types/global";
 import pLimit from "p-limit";
+import { Prisma } from "@prisma/client";
 
-// ======= ARRAY OF MAILS TO BE SYNCED IN DATABASE. =========
-const SyncToDataBase = async (
-  allEmails: EmailRecord[], // Array of email records to be synced.
-  accountId: string, // Account identifier to associate emails with.
-): Promise<void> => {
-  console.log(`syncing emails has ${allEmails.length}`);
-  const Limit = pLimit(10);
-
-  // PROCESS EACH MAIL UISNG LIMIT FUNCTION FOR CONCURRENCY CONTROL
+// FUNCTION TO SYNC EMAILS TO THE DATABASE
+export const SyncToDataBase = async (
+  Allemails: EmailMessage[],
+  accountId: string,
+) => {
+  console.log(`syncing emails has ${Allemails.length}`);
+  const Limit = pLimit(10); // LIMITING CONCURRENT PROMISE EXECUTIONS TO 10
   try {
+    // PROCESS EMAILS IN PARALLEL WITH A CONCURRENCY LIMIT
     await Promise.all(
-      allEmails.map((email, i) =>
-        Limit(() => SaveEmailsInDb(email, accountId, i)),
+      Allemails.map((Allemails, i) =>
+        Limit(() => upsertEmail(Allemails, i, accountId)),
       ),
     );
-    console.log("All emails synced successfully.");
   } catch (error) {
-    console.error("Error syncing emails to database:", error);
+    console.log("error", error); // LOG ANY ERROR THAT OCCURS
   }
 };
 
-// =======  PROCESS EACH MALE AND SAVE INTO DATABASE ========
-
-const SaveEmailsInDb = async (
-  email: EmailRecord,
-  accountId: string,
+// FUNCTION TO UPSERT A SINGLE EMAIL
+const upsertEmail = async (
+  email: EmailMessage,
   index: number,
+  accountId: string,
 ) => {
   console.log(`Upserting email ${index + 1}`, JSON.stringify(email, null, 2));
-  let emailLabelType: "inbox" | "sent" | "draft" = "inbox";
-
   try {
+    // DETERMINE THE LABEL TYPE OF THE EMAIL
+    let emailLabelType: "inbox" | "sent" | "draft" = "inbox";
     if (
       email.sysLabels.includes("inbox") ||
       email.sysLabels.includes("important")
@@ -45,8 +49,7 @@ const SaveEmailsInDb = async (
       emailLabelType = "draft";
     }
 
-    //  UNIQUE EMAIL ADDRESS WITHOUT DUPLICATES
-
+    // UPSERT EMAIL ADDRESSES
     const addressesToUpsert = new Map();
     for (const address of [
       email.from,
@@ -55,7 +58,7 @@ const SaveEmailsInDb = async (
       ...email.bcc,
       ...email.replyTo,
     ]) {
-      addressesToUpsert.set(address.emailAddress, address);
+      addressesToUpsert.set(address.address, address);
     }
 
     const upsertedAddresses: (Awaited<
@@ -63,37 +66,40 @@ const SaveEmailsInDb = async (
     > | null)[] = [];
 
     for (const address of addressesToUpsert.values()) {
-      const upsertedAddress = await upsertEmailAddress(address, accountId);
+      const upsertedAddress = await upsertEmailAddress(address, accountId); // UPSERT EACH EMAIL ADDRESS
       upsertedAddresses.push(upsertedAddress);
     }
 
+    // MAP UPSERTED ADDRESSES BY THEIR EMAIL ADDRESSES
     const addressMap = new Map(
       upsertedAddresses
         .filter(Boolean)
         .map((address) => [address!.address, address]),
     );
 
-    const fromAddress = addressMap.get(email.from.emailAddress);
+    const fromAddress = addressMap.get(email.from.address); // RETRIEVE FROM ADDRESS
     if (!fromAddress) {
       console.log(
         `Failed to upsert from address for email ${email.bodySnippet}`,
       );
       return;
     }
+
+    // RETRIEVE TO, CC, BCC, AND REPLY-TO ADDRESSES
     const toAddresses = email.to
-      .map((addr) => addressMap.get(addr.emailAddress))
+      .map((addr) => addressMap.get(addr.address))
       .filter(Boolean);
     const ccAddresses = email.cc
-      .map((addr) => addressMap.get(addr.emailAddress))
+      .map((addr) => addressMap.get(addr.address))
       .filter(Boolean);
     const bccAddresses = email.bcc
-      .map((addr) => addressMap.get(addr.emailAddress))
+      .map((addr) => addressMap.get(addr.address))
       .filter(Boolean);
     const replyToAddresses = email.replyTo
-      .map((addr) => addressMap.get(addr.emailAddress))
+      .map((addr) => addressMap.get(addr.address))
       .filter(Boolean);
 
-    // 2. Upsert Thread
+    // UPSERT THREAD ASSOCIATED WITH THE EMAIL
     const thread = await db.thread.upsert({
       where: { id: email.threadId },
       update: {
@@ -130,8 +136,7 @@ const SaveEmailsInDb = async (
       },
     });
 
-    // ============== EMAILS IN DB
-
+    // UPSERT EMAIL RECORD
     await db.email.upsert({
       where: { id: email.id },
       update: {
@@ -197,30 +202,44 @@ const SaveEmailsInDb = async (
       },
     });
 
+    // UPDATE THREAD STATUS BASED ON EMAIL LABELS
     const threadEmails = await db.email.findMany({
       where: { threadId: thread.id },
       orderBy: { receivedAt: "asc" },
     });
 
     let threadFolderType = "sent";
-
     for (const threadEmail of threadEmails) {
       if (threadEmail.emailLabel === "inbox") {
         threadFolderType = "inbox";
-        break;
+        break; // IF ANY EMAIL IS IN INBOX, MARK THREAD AS INBOX
       } else if (threadEmail.emailLabel === "draft") {
-        threadFolderType = "draft";
+        threadFolderType = "draft"; // SET TO DRAFT, CONTINUE CHECKING
       }
     }
+    await db.thread.update({
+      where: { id: thread.id },
+      data: {
+        draftStatus: threadFolderType === "draft",
+        inboxStatus: threadFolderType === "inbox",
+        sentStatus: threadFolderType === "sent",
+      },
+    });
 
+    // UPSERT EMAIL ATTACHMENTS
     for (const attachment of email.attachments) {
       await upsertAttachment(email.id, attachment);
     }
   } catch (error) {
-    console.log(error);
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      console.log(`Prisma error for email ${email.id}: ${error.message}`);
+    } else {
+      console.log(`Unknown error for email ${email.id}: ${error}`);
+    }
   }
 };
 
+// FUNCTION TO UPSERT AN EMAIL ADDRESS
 const upsertEmailAddress = async (address: EmailAddress, accountId: string) => {
   try {
     const existingAddress = await db.emailAddress.findUnique({
@@ -253,7 +272,11 @@ const upsertEmailAddress = async (address: EmailAddress, accountId: string) => {
   }
 };
 
-const upsertAttachment = async (emailId: string, attachment: Attachment) => {
+// FUNCTION TO UPSERT AN EMAIL ATTACHMENT
+const upsertAttachment = async (
+  emailId: string,
+  attachment: EmailAttachment,
+) => {
   try {
     await db.emailAttachment.upsert({
       where: { id: attachment.id ?? "" },

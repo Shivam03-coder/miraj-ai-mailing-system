@@ -1,12 +1,13 @@
 import { db } from "@/server/db";
 import {
   EmailAddress,
-  EmailRecord,
-  IEmailResponse,
-  ISyncResponse,
+  EmailMessage,
+  SyncResponse,
+  SyncUpdatedResponse,
 } from "@/types/global";
 import { SyncToDataBase } from "@/utils/database-sync";
 import axios from "axios";
+
 export class Account {
   private token: string;
 
@@ -14,10 +15,50 @@ export class Account {
     this.token = token;
   }
 
-  // Method to initiate the sync process
-  private async startSync(daysWithin: number): Promise<ISyncResponse> {
+  // Helper to fetch email pages
+  private async fetchEmailPages({
+    deltaToken,
+    pageToken,
+  }: {
+    deltaToken?: string | null;
+    pageToken?: string | null;
+  }): Promise<{ emails: EmailMessage[]; nextDeltaToken: string | null }> {
     try {
-      const response = await axios.post<ISyncResponse>(
+      let allEmails: EmailMessage[] = [];
+      let nextDeltaToken = deltaToken || null;
+
+      let response = await this.getUpdatedEmailsByBookmarkToken({
+        deltaToken,
+        pageToken,
+      });
+
+      allEmails = response.records;
+      if (response.nextDeltaToken) {
+        nextDeltaToken = response.nextDeltaToken;
+      }
+
+      while (response.nextPageToken) {
+        response = await this.getUpdatedEmailsByBookmarkToken({
+          pageToken: response.nextPageToken,
+        });
+        allEmails = allEmails.concat(response.records);
+
+        if (response.nextDeltaToken) {
+          nextDeltaToken = response.nextDeltaToken;
+        }
+      }
+
+      return { emails: allEmails, nextDeltaToken };
+    } catch (error) {
+      console.error("Error fetching email pages:", error);
+      throw new Error("Failed to fetch email pages.");
+    }
+  }
+
+  // Method to initiate the sync process
+  private async startSync(daysWithin: number): Promise<SyncResponse> {
+    try {
+      const response = await axios.post<SyncResponse>(
         "https://api.aurinko.io/v1/email/sync",
         {},
         {
@@ -32,8 +73,8 @@ export class Account {
       );
       return response.data;
     } catch (error) {
-      console.log(error);
-      throw error;
+      console.error("Error initiating sync:", error);
+      throw new Error("Failed to initiate sync.");
     }
   }
 
@@ -44,13 +85,13 @@ export class Account {
   }: {
     deltaToken?: string | null;
     pageToken?: string | null;
-  }): Promise<IEmailResponse> {
+  }): Promise<SyncUpdatedResponse> {
     try {
       const params: Record<string, string> = {};
       if (deltaToken) params.deltaToken = deltaToken;
       if (pageToken) params.pageToken = pageToken;
 
-      const response = await axios.get<IEmailResponse>(
+      const response = await axios.get<SyncUpdatedResponse>(
         "https://api.aurinko.io/v1/email/sync/updated",
         {
           headers: {
@@ -61,8 +102,8 @@ export class Account {
       );
       return response.data;
     } catch (error) {
-      console.log(error);
-      throw error;
+      console.error("Error fetching updated emails:", error);
+      throw new Error("Failed to fetch updated emails.");
     }
   }
 
@@ -83,46 +124,22 @@ export class Account {
       }
 
       if (!syncResponse.ready) {
-        throw new Error("SYNCRONIZATION_FAILED");
+        throw new Error("Synchronization failed after multiple attempts.");
       }
 
-      let storedDeltaToken = syncResponse.syncUpdatedToken;
-      let updatedResponse = await this.getUpdatedEmailsByBookmarkToken({
-        deltaToken: storedDeltaToken,
+      const { emails, nextDeltaToken } = await this.fetchEmailPages({
+        deltaToken: syncResponse.syncUpdatedToken,
       });
 
-      let recordEmails: EmailRecord[] = updatedResponse.records;
+      console.log(`Sync Completed: Total ${emails.length} emails fetched`);
 
-      console.log(`Fetched ${recordEmails.length} emails from initial sync.`);
-
-      // Fetch all additional pages of updated emails and we will check upadted mails are there or not
-      while (updatedResponse.nextPageToken) {
-        console.log("Fetching next page of emails...");
-        updatedResponse = await this.getUpdatedEmailsByBookmarkToken({
-          pageToken: updatedResponse.nextPageToken,
-        });
-        recordEmails = recordEmails.concat(updatedResponse.records);
-
-        if (updatedResponse.nextDeltaToken) {
-          storedDeltaToken = updatedResponse.nextDeltaToken;
-        }
-      }
-
-      console.log(
-        `Sync Completed: Total ${recordEmails.length} emails fetched`,
-      );
-
-      return {
-        recordEmails,
-        deltaToken: storedDeltaToken,
-      };
+      return { recordEmails: emails, deltaToken: nextDeltaToken };
     } catch (error) {
-      console.log(error);
+      console.error("Primary email sync process failed:", error);
       throw new Error("Primary email sync process failed.");
     }
   }
 
-  // SEND EMAILS
   // SEND EMAILS
   async sendEmails({
     bcc,
@@ -171,16 +188,12 @@ export class Account {
 
       return resp.data;
     } catch (error) {
-      // Log the error for debugging
       console.error("Error sending email:", error);
-
-      // You can throw a more descriptive error or handle it as per your application's needs
-      throw new Error(`Failed to send email. ${error || "Unknown error"}`);
+      throw new Error("Failed to send email.");
     }
   }
 
-  // METHOD TO SYNC EMAILS ON THE BASIS OF NEXT DELTATOKEN
-
+  // Method to sync new emails to the database
   async SyncNewEmailsInDb() {
     try {
       const acc = await db.account.findUnique({
@@ -191,50 +204,32 @@ export class Account {
 
       if (!acc) throw new Error("Invalid token");
       if (!acc.nextDeltaToken) throw new Error("No delta token");
-      let response = await this.getUpdatedEmailsByBookmarkToken({
+
+      const { emails, nextDeltaToken } = await this.fetchEmailPages({
         deltaToken: acc.nextDeltaToken,
       });
-      console.log("🚀 ~ Account ~ SyncNewEmailsInDb ~ response:", response)
 
-      
-      // let allEmails: EmailRecord[] = response.records;
-      // let storedDeltaToken = acc.nextDeltaToken;
-      // if (response.nextDeltaToken) {
-      //   storedDeltaToken = response.nextDeltaToken;
-      // }
+      if (emails.length === 0) {
+        console.log("No new emails to sync.");
+        return;
+      }
 
-      // while (response.nextPageToken) {
-      //   response = await this.getUpdatedEmailsByBookmarkToken({
-      //     pageToken: response.nextPageToken,
-      //   });
-      //   allEmails = allEmails.concat(response.records);
-      //   if (response.nextDeltaToken) {
-      //     storedDeltaToken = response.nextDeltaToken;
-      //   }
-      // }
+      try {
+        await SyncToDataBase(emails, acc.id);
+        console.log("Emails synced to database successfully.");
+      } catch (error) {
+        console.error("Error syncing emails to database:", error);
+        throw new Error("Failed to sync emails to the database.");
+      }
 
-      // if (!response) throw new Error("Failed to sync emails");
-      // console.log("==================allEmails==============\n", allEmails);
+      await db.account.update({
+        where: { id: acc.id },
+        data: { nextDeltaToken },
+      });
 
-      // try {
-      //   await SyncToDataBase(allEmails, acc.id);
-      // } catch (error) {
-      //   console.log("error", error);
-      // }
-
-      // // console.log('syncEmails', response)
-      // await db.account.update({
-      //   where: {
-      //     id: acc.id,
-      //   },
-      //   data: {
-      //     nextDeltaToken: storedDeltaToken,
-      //   },
-      // });
-
-      // console.log("Account updated succesfully");
+      console.log("Account updated successfully with the new delta token.");
     } catch (error) {
-      console.log(error);
+      console.error("Error syncing new emails to database:", error);
     }
   }
 }
