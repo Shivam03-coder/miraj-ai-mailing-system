@@ -1,5 +1,5 @@
 "use client";
-import ThreadCards from "./threads-cards";
+import ThreadCards from "./threads-col";
 
 function ThreadBox() {
   return (

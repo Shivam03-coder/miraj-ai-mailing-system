@@ -1,11 +1,8 @@
 "use client";
-
-import { Button } from "@/components/ui/button";
 import {
   Sheet,
   SheetContent,
   SheetDescription,
-  SheetFooter,
   SheetHeader,
   SheetTitle,
 } from "@/components/ui/sheet";
@@ -83,7 +80,7 @@ export function EditorSheet({ open }: EditorSheetProps) {
         className="max-h-screen overflow-y-auto bg-secondary text-primary"
       >
         <SheetHeader>
-          <SheetTitle>
+          <SheetTitle className="flex items-center gap-2 font-inter text-xl font-semibold text-primary">
             <span className="flex items-center gap-2 font-inter text-xl font-semibold text-primary">
               MIRAJ AI MAIL COMPOSING
               <Bot size={23} />

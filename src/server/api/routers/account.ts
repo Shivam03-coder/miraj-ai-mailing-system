@@ -74,8 +74,8 @@ export const mailsRouter = createTRPCRouter({
       const Acc = new Account(acc?.token);
 
       await Acc.SyncNewEmailsInDb()
-      .then(() => console.log("Sync completed"))
-      .catch((err) => console.error("Error during sync:", err));
+        .then(() => console.log("Sync completed"))
+        .catch((err) => console.error("Error during sync:", err));
 
       // DYNAMIC CUSTOME QUERRYING
 
@@ -271,6 +271,67 @@ export const mailsRouter = createTRPCRouter({
         return res;
       } catch (error) {
         console.log(error);
+      }
+    }),
+
+  serachEmails: protectedProcedure
+    .input(
+      z.object({
+        accountId: z.string(),
+        text: z.string(),
+      }),
+    )
+    .mutation(async ({ ctx, input }) => {
+      try {
+        const acc = await authorizeUserAcessAccount(
+          input.accountId,
+          ctx.auth.userId,
+        );
+
+        if (!acc) throw new Error("ACCOUNT NOT FOUND");
+
+        let textsearch;
+
+        textsearch = input.text.trim();
+
+        console.log(textsearch);
+
+        const thr = await ctx.db.thread.findMany({
+          where: {
+            subject: {
+              contains: textsearch,
+              mode: "insensitive",
+            },
+          },
+          include: {
+            emails: {
+              orderBy: {
+                sentAt: "asc",
+              },
+              select: {
+                from: {
+                  select: {
+                    name: true,
+                    address: true,
+                  },
+                },
+                body: true,
+                bodySnippet: true,
+                emailLabel: true,
+                subject: true,
+                sysLabels: true,
+                id: true,
+                sentAt: true,
+              },
+            },
+          },
+          orderBy: {
+            lastMessageDate: "desc",
+          },
+        });
+        return thr;
+      } catch (error) {
+        console.log("serachEmails End Points:", error);
       }
     }),
 });

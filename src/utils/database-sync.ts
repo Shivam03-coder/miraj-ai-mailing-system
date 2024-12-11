@@ -8,7 +8,6 @@ import type {
 } from "@/types/global";
 import pLimit from "p-limit";
 import { Prisma } from "@prisma/client";
-import { OramaClient } from "@/lib/orama";
 
 // FUNCTION TO SYNC EMAILS TO THE DATABASE
 export const SyncToDataBase = async (
@@ -17,33 +16,25 @@ export const SyncToDataBase = async (
 ) => {
   console.log(`syncing emails has ${Allemails.length}`);
   const Limit = pLimit(10); // LIMITING CONCURRENT PROMISE EXECUTIONS TO 10
-  const Orama = new OramaClient(accountId);
-  await Orama.initializeOrama();
-
   try {
-    for (const email of Allemails) {
-      await Orama.insertInDb({
-        title: email.subject,
-        body: email.body,
-        rawBody: email.bodySnippet ?? "",
-        from: `${email.from.name} <${email.from.address}>`,
-        to: email.to.map((t) => `${t.name} <${t.address}>`),
-        sentAt: new Date(email.sentAt).toLocaleString(),
-        threadId: email.threadId,
-      });
-      upsertEmail(email, accountId);
-    }
+    // PROCESS EMAILS IN PARALLEL WITH A CONCURRENCY LIMIT
+    await Promise.all(
+      Allemails.map((Allemails, i) =>
+        Limit(() => upsertEmail(Allemails, i, accountId)),
+      ),
+    );
   } catch (error) {
-    console.log("error", error);
+    console.log("error", error); // LOG ANY ERROR THAT OCCURS
   }
 };
 
 // FUNCTION TO UPSERT A SINGLE EMAIL
 const upsertEmail = async (
   email: EmailMessage,
+  index: number,
   accountId: string,
-  index?: number,
 ) => {
+  console.log(`Upserting email ${index + 1}`, JSON.stringify(email, null, 2));
   try {
     // DETERMINE THE LABEL TYPE OF THE EMAIL
     let emailLabelType: "inbox" | "sent" | "draft" = "inbox";

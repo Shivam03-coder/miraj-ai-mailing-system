@@ -58,7 +58,6 @@ const ThreadCards = () => {
           <span className="te rounded bg-secondary px-2 py-1">{date}</span>
           {thread.map((thr) => {
             const lastEmail = thr.emails.at(-1);
-
             return (
               <Card
                 onClick={() => dispatch(setThreadId(thr.id))}
