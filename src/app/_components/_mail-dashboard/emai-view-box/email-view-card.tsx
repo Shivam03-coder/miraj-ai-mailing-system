@@ -14,8 +14,8 @@ const EmailViewCards: React.FC<EmailViewCardsprops> = ({ email }) => {
   const { account } = useThreads();
   return (
     <Card className="mb-5 flex flex-col gap-2 bg-secondary p-3">
-      <div className="flex justify-between">
-        <div className="flex items-center gap-2">
+      <div className="flex my-4  justify-between">
+        <div className="flex flex-wrap items-center gap-2">
           {!account ? (
             <Avatar
               name={email.from.name ?? email.from.address}
@@ -35,6 +35,7 @@ const EmailViewCards: React.FC<EmailViewCardsprops> = ({ email }) => {
             {email.from.name}
           </h6>
         </div>
+
         <h6>{formatDistanceToNow(new Date(email.sentAt ?? new Date()))}</h6>
       </div>
       <Letter html={email.body ?? ""} />
