@@ -6,7 +6,7 @@ export function VideoModal() {
       <HeroVideoDialog
         className="block p-2 shadow-none dark:hidden"
         animationStyle="top-in-bottom-out"
-        videoSrc="https://www.youtube.com/embed/qh3NGpYRG3I?si=4rb-zSdDkVK9qxxb"
+        videoSrc="https://www.youtube.com/embed/1ne78LxD3io?si=U3OsVAuJinabo1IY"
         thumbnailSrc="/t.png"
         thumbnailAlt="Hero Video"
       />
