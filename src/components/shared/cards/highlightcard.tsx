@@ -4,7 +4,7 @@ import { Sparkle, Star, User } from "lucide-react";
 
 const HighlightCards = () => {
   return (
-    <div className="grid w-[90%] grid-cols-3 place-items-center">
+    <div className="grid w-[90%] my-10 mx-auto gap-10 lg:grid-cols-3 place-items-center">
       {HiglightCardData.map((items) => (
         <ShineBorder
           key={items.id}

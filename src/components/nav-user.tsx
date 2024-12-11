@@ -13,7 +13,6 @@ import {
 import { UserButton, useUser } from "@clerk/nextjs";
 import { GetUserInfo } from "@/lib/clerk/getuserinfo";
 import { useEffect, useState } from "react";
-import { Button } from "./ui/button";
 import TooltipBtn from "./tool-tip-btn";
 import { EditorSheet } from "./editor-sheet";
 import { useAppDispatch, useAppSelector } from "@/store/store";
@@ -24,8 +23,6 @@ export function NavUser() {
     emailAddresses: any;
     firstName: string;
   }>(null);
-
-  const [Open, setOpen] = useState<boolean>(false);
 
   const { isSheetEditiorOpen } = useAppSelector((st) => st.account);
   const Dispatch = useAppDispatch();
