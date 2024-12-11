@@ -11,6 +11,7 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
 import { LogsIcon } from "lucide-react";
+import { useMediaQuery } from "usehooks-ts";
 
 const components: { title: string; href: string; description: string }[] = [
   {
@@ -51,6 +52,8 @@ const components: { title: string; href: string; description: string }[] = [
 ];
 
 export function NavigationMenuBar() {
+  const matches = useMediaQuery("(min-width: 768px)");
+
   return (
     <NavigationMenu>
       <NavigationMenuList>
@@ -97,7 +100,7 @@ export function NavigationMenuBar() {
           <NavigationMenuTrigger className="text-black hover:bg-paleblue">
             Components
           </NavigationMenuTrigger>
-          <NavigationMenuContent className="bg-white">
+          <NavigationMenuContent className="bg-white mr-16">
             <ul className="grid w-[18.75rem] gap-3 p-4 md:w-[25rem] md:grid-cols-2 lg:w-[31.25rem]">
               {components.map((component) => (
                 <ListItem
