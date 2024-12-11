@@ -6,7 +6,6 @@ import BlurFade from "@/components/ui/blur-fade";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Megaphone, Rocket } from "lucide-react";
 import React from "react";
-// import PlanCards from "./payablecards.tsx";
 import FaqAccordion from "./faqsaccordion.tsx";
 import { useRouter } from "next/navigation";
 import { SocialDock } from "@/components/social-dock.tsx";
@@ -46,7 +45,7 @@ const MainLayout = () => {
           <Rocket size={23} color="white" />
           Getting started for free
         </Button>
-        {/* <SocialDock /> */}
+        <SocialDock />
       </BlurFade>
 
       {/* VIDEO MODAL */}
@@ -59,7 +58,7 @@ const MainLayout = () => {
       </BlurFade>
 
       {/* PROBLEM AND SOLUTION */}
-      <section className="h-full">
+      <section className="h-full pb-10">
         <BlurFade
           className="flex-center mx-auto mt-16 w-full flex-col gap-5"
           delay={0.3}
@@ -89,7 +88,11 @@ const MainLayout = () => {
         >
           <HighlightCards />
         </BlurFade>
+        <div className="my-10">
+          <FaqAccordion />
+        </div>
       </section>
+      {/* PROBLEM AND SOLUTION */}
     </main>
   );
 };
