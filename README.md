@@ -10,7 +10,8 @@
 
 2> Lack of AI-Powered Mailing Support: Gmail does not provide integrated AI tools for enhanced mailing features like auto-summarization, sentiment analysis, or intelligent sorting.
 
-3> Absence of Professional Customization: Gmail lacks tailored email solutions for professional needs, such as industry-specific templates, advanced personalization, or context-aware email drafting.
+3> Absence of Professional Customization: Gmail lacks tailored email solutions for professional needs, ![my app](https://github.com/user-attachments/assets/1c921dfd-9e4e-4900-aae7-fbb8daa3c4f1)
+such as industry-specific templates, advanced personalization, or context-aware email drafting.
 ## Solution: Miraj AI-Powered Mailing Platform
 
 1> Multi-Account Fetching :
@@ -47,4 +48,5 @@ Saves time and enhances productivity with smart automation and bulk email capabi
 ## Demo
 
 Insert gif or link to demo
-https://www.youtube.com/embed/1ne78LxD3io?si=U3OsVAuJinabo1IY
+https://www.youtube.com/embed/1ne78LxD3io?si=U3OsVAuJinabo1IY![my app](https://github.com/user-attachments/assets/1c67f2e9-1117-4422-a90f-872ee5185bc0)
+
