@@ -55,9 +55,9 @@ const EmailViewbox = () => {
       </div>
 
       {/* Reply box section */}
-      {/* <div className="flex flex-1 flex-col overflow-y-auto">
+      <div className="flex flex-1 flex-col overflow-y-auto">
         <ReplyBox />
-      </div> */}
+      </div>
     </main>
   );
 };

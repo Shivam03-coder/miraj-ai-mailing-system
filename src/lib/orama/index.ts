@@ -6,12 +6,10 @@ export class OramaClient {
   // STORES THE ORAMA INSTANCE, INITIALIZED AS NULL
   private Orama: AnyOrama | null = null;
 
-  // STORES THE ACCOUNT ID FOR WHICH THIS CLIENT IS RESPONSIBLE
-  private accountId: string;
+  private AccountId: string;
 
-  // CONSTRUCTOR TO INITIALIZE THE CLIENT WITH A SPECIFIC ACCOUNT ID
-  constructor(accountId: string) {
-    this.accountId = accountId;
+  constructor(AccountId: string) {
+    this.AccountId = AccountId
   }
 
   // METHOD TO SAVE THE ORAMA INDEX TO THE DATABASE
@@ -27,7 +25,7 @@ export class OramaClient {
     // UPDATE THE DATABASE WITH THE SAVED INDEX
     await db.account.update({
       where: {
-        id: this.accountId,
+        id: this.AccountId,
       },
       data: {
         oramaIndex: index,
@@ -35,12 +33,12 @@ export class OramaClient {
     });
   }
 
-  // METHOD TO INITIALIZE OR RESTORE THE ORAMA INSTANCE
+  // // METHOD TO INITIALIZE OR RESTORE THE ORAMA INSTANCE
   async initializeOrama() {
     // FETCH THE ACCOUNT DETAILS FROM THE DATABASE
     const account = await db.account.findUnique({
       where: {
-        id: this.accountId,
+        id: this.AccountId,
       },
     });
 
@@ -85,7 +83,7 @@ export class OramaClient {
     // INSERT THE EMAILS INTO ORAMA IF NECESSARY (CODE NOT INCLUDED)
   }
 
-  // METHOD TO SEARCH THE ORAMA INDEX WITH A SPECIFIC TERM
+  // // METHOD TO SEARCH THE ORAMA INDEX WITH A SPECIFIC TERM
   async searchInDb({ term }: { term: string }) {
     // ENSURE THE ORAMA INSTANCE IS INITIALIZED BEFORE SEARCHING
     if (!this.Orama) {
@@ -98,7 +96,7 @@ export class OramaClient {
     });
   }
 
-  // METHOD TO INSERT DOCUMENTS INTO THE ORAMA INDEX
+  // // METHOD TO INSERT DOCUMENTS INTO THE ORAMA INDEX
   async insertInDb(docs: any) {
     // ENSURE THE ORAMA INSTANCE IS INITIALIZED BEFORE INSERTING
     if (!this.Orama) {
