@@ -10,7 +10,6 @@ import { formatDistanceToNow } from "date-fns";
 import DOMPurify from "dompurify";
 import { useAppDispatch } from "@/store/store";
 import { setThreadId } from "@/store/states";
-import { Spinner } from "@nextui-org/spinner";
 
 // Corrected Type Definition for ThreadData
 type ThreadData = RouterOutputs["mails"]["serachEmails"];
@@ -67,7 +66,7 @@ const ThreadSearchInput = () => {
       {/* Display Loading State */}
       {searchValue && IsLoading && (
         <div className="flex-center absolute left-0 right-0 z-10 mt-2 min-h-24 w-full overflow-y-auto rounded-md bg-primary p-3 text-secondary shadow-lg">
-          <Spinner color="default" size="md" />
+          <h6>We are finding your mails...</h6>
         </div>
       )}
 
