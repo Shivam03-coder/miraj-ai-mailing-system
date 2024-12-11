@@ -25,7 +25,7 @@ const MainLayout = () => {
           className="bg-primary p-4 px-5 text-xl font-medium text-secondary lg:text-3xl"
           color={["#A07CFE", "#FE8FB5", "#FFBE7B"]}
         >
-          MIRAJ AI MAILING SOFTWEAR
+          MIRAJ AI MAILING SOFTWARE
         </ShineBorder>
 
         <header className="space-y-4 px-4 text-center">
@@ -33,8 +33,8 @@ const MainLayout = () => {
             Automate your emails effortlessly with Miraj.
           </h1>
           <h4 className="text-slate-500">
-            No matter your email challenge, <br /> Miraj is here to simplify and
-            solve it.
+            No matter your email challenges, <br /> Miraj is here to simplify and
+            solve them.
           </h4>
         </header>
         <Button
@@ -43,7 +43,7 @@ const MainLayout = () => {
           aria-label="getting-started"
         >
           <Rocket size={23} color="white" />
-          Getting started for free
+          Get Started for Free
         </Button>
         <SocialDock />
       </BlurFade>
@@ -64,7 +64,7 @@ const MainLayout = () => {
           delay={0.3}
           inView
         >
-          <h4 className="text-primary">Trusted By Leading Teams</h4>
+          <h4 className="text-primary">Trusted by Leading Teams</h4>
           <MarqueeBox />
         </BlurFade>
         <BlurFade
@@ -74,7 +74,7 @@ const MainLayout = () => {
         >
           <header className="space-y-4 px-4 text-center">
             <h4 className="mb-4 text-center text-lg font-medium text-primary">
-              Let’s Know What’s the Problem ?
+              Let’s Understand the Problem
             </h4>
             <h1 className="text-center text-3xl font-bold leading-tight text-primary sm:text-4xl lg:text-5xl">
               Automate your emails effortlessly with Miraj.
