@@ -48,5 +48,4 @@ Saves time and enhances productivity with smart automation and bulk email capabi
 ## Demo
 
 Insert gif or link to demo
-https://www.youtube.com/embed/1ne78LxD3io?si=U3OsVAuJinabo1IY![my app](https://github.com/user-attachments/assets/1c67f2e9-1117-4422-a90f-872ee5185bc0)
-
+https://www.youtube.com/embed/1ne78LxD3io?si=U3OsVAuJinabo1IY
