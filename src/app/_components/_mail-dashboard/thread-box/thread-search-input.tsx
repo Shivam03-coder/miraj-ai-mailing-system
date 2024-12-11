@@ -29,9 +29,10 @@ const ThreadSearchInput = () => {
 
       {/* Display Entered Text */}
       {searchValue && (
-        <div className="absolute w-full left-0 right-0 z-10 mt-2 max-h-64 overflow-y-auto rounded-md bg-white p-3 shadow-lg">
-          <p className="text-gray-800 text-md">
-            You are searching for: <span className="font-bold">{searchValue}</span>
+        <div className="absolute left-0 right-0 z-10 mt-2 max-h-64 w-full overflow-y-auto rounded-md bg-secondary p-3 text-primary shadow-lg">
+          <p className="text-md text-gray-800">
+            You are searching for:{" "}
+            <span className="font-bold">{searchValue}</span>
           </p>
 
           {/* Simulating more content to show overflow behavior */}
