@@ -50,22 +50,22 @@ const DATA = {
     social: {
       GitHub: {
         name: "GitHub",
-        url: "https://github.com/your-profile",
+        url: "https://github.com/Shivam03-coder",
         icon: Icons.github,
       },
       LinkedIn: {
         name: "LinkedIn",
-        url: "https://linkedin.com/in/your-profile",
+        url: "https://www.linkedin.com/in/shivam-anand-b79136277/",
         icon: Icons.linkedin,
       },
       X: {
         name: "X",
-        url: "https://twitter.com/your-profile",
+        url: "https://x.com/ShivamA02580516",
         icon: Icons.x,
       },
       email: {
         name: "Send Email",
-        url: "mailto:your-email@example.com",
+        url: "mailto:shivam850anand@gmail.com",
         icon: Icons.email,
       },
     },
@@ -75,7 +75,10 @@ const DATA = {
 export function SocialDock() {
   return (
     <TooltipProvider>
-      <Dock className="bg-secondary shadow-none border-none px-11" direction="middle">
+      <Dock
+        className="border-none bg-secondary px-11 shadow-none"
+        direction="middle"
+      >
         <Separator orientation="vertical" className="h-full" />
         {Object.entries(DATA.contact.social).map(([name, social]) => (
           <DockIcon key={name}>

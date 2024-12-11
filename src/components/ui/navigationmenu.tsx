@@ -15,39 +15,40 @@ import { useMediaQuery } from "usehooks-ts";
 
 const components: { title: string; href: string; description: string }[] = [
   {
-    title: "Alert Dialog",
-    href: "/docs/primitives/alert-dialog",
+    title: "Email Templates",
+    href: "/docs/features/email-templates",
     description:
-      "A modal dialog that interrupts the user with important content and expects a response.",
+      "Design and manage custom email templates for campaigns and automated workflows.",
   },
   {
-    title: "Hover Card",
-    href: "/docs/primitives/hover-card",
+    title: "Subscriber Segmentation",
+    href: "/docs/features/subscriber-segmentation",
     description:
-      "For sighted users to preview content available behind a link.",
+      "Segment your audience based on custom criteria for targeted email campaigns.",
   },
   {
-    title: "Progress",
-    href: "/docs/primitives/progress",
+    title: "Campaign Analytics",
+    href: "/docs/features/campaign-analytics",
     description:
-      "Displays an indicator showing the completion progress of a task, typically displayed as a progress bar.",
+      "Track the performance of your email campaigns with detailed metrics and insights.",
   },
   {
-    title: "Scroll-area",
-    href: "/docs/primitives/scroll-area",
-    description: "Visually or semantically separates content.",
+    title: "Automated Workflows",
+    href: "/docs/features/automated-workflows",
+    description:
+      "Create workflows to automate repetitive tasks like welcome emails and follow-ups.",
   },
   {
-    title: "Tabs",
-    href: "/docs/primitives/tabs",
+    title: "Dynamic Personalization",
+    href: "/docs/features/dynamic-personalization",
     description:
-      "A set of layered sections of content—known as tab panels—that are displayed one at a time.",
+      "Enhance engagement by personalizing email content with dynamic fields.",
   },
   {
-    title: "Tooltip",
-    href: "/docs/primitives/tooltip",
+    title: "Deliverability Insights",
+    href: "/docs/features/deliverability-insights",
     description:
-      "A popup that displays information related to an element when the element receives keyboard focus or the mouse hovers over it.",
+      "Monitor email deliverability rates and improve inbox placement with actionable insights.",
   },
 ];
 
@@ -105,11 +106,7 @@ export function NavigationMenuBar() {
             <NavigationMenuContent className="mr-16 bg-white">
               <ul className="grid w-[18.75rem] gap-3 p-4 md:w-[25rem] md:grid-cols-2 lg:w-[31.25rem]">
                 {components.map((component) => (
-                  <ListItem
-                    key={component.title}
-                    title={component.title}
-                    href={component.href}
-                  >
+                  <ListItem key={component.title} title={component.title}>
                     {component.description}
                   </ListItem>
                 ))}

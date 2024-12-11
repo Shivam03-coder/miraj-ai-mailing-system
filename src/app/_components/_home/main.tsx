@@ -4,7 +4,7 @@ import { MarqueeBox } from "@/components/shared/marquee/marqueebox";
 import { VideoModal } from "@/components/shared/modals/videomodals";
 import BlurFade from "@/components/ui/blur-fade";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Megaphone, Rocket } from "lucide-react";
+import { Rocket } from "lucide-react";
 import React from "react";
 import FaqAccordion from "./faqsaccordion.tsx";
 import { useRouter } from "next/navigation";
